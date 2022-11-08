@@ -139,7 +139,7 @@ const LoginScreen = ({ navigation }) => {
                     <TouchableOpacity
                         activeOpacity={0.6}
                         onPress={() => {
-                            alert("Moving To home Screen and Can't Back");
+
                             navigation.replace('Home', {
                                 userEmail: userEmail,
                                 otherParam: 'anything you want here',

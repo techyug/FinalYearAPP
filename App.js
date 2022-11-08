@@ -35,7 +35,7 @@ function App() {
           ),
         }} name="ForgotPass" component={ForgotPassScreen} />
         <Stack.Screen name='Register' component={RegisterScreen} />
-        <Stack.Screen name="Home" component={HomeScreen} />
+        <Stack.Screen name="Home" options={{ headerShown: false }} component={HomeScreen} />
 
 
       </Stack.Navigator>
