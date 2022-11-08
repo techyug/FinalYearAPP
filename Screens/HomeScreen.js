@@ -1,20 +1,33 @@
 import { Button, StyleSheet, Text, View } from 'react-native'
+import { NavigationContainer } from '@react-navigation/native';
+import { createMaterialBottomTabNavigator } from '@react-navigation/material-bottom-tabs';
 
 
-export default function HomeScreen({ route, navigation }) {
-    const styles = StyleSheet.create({
-        container: {
-            flex: 1,
-            justifyContent: 'center',
-            alignItems: 'center'
-        }
-    });
-    console.warn(navigation, route);
+function FeedScreen() {
     return (
-        <View style={styles.container}>
-            <Text>Welcome {route.params.userEmail}</Text>
-            <Button title='Logout' onPress={() => navigation.replace('Login')} />
+        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+            <Text>FeedScreen!</Text>
         </View>
-    )
+    );
 }
 
+function SearchScreen() {
+    return (
+        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+            <Text>SearchsScreen</Text>
+        </View>
+    );
+}
+
+const Tab = createMaterialBottomTabNavigator();
+
+export default function HomeScreen() {
+    return (
+        <NavigationContainer>
+            <Tab.Navigator>
+                <Tab.Screen name="Feed" component={FeedScreen} />
+                <Tab.Screen name="Search" component={SearchScreen} />
+            </Tab.Navigator>
+        </NavigationContainer>
+    );
+}
