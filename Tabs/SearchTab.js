@@ -8,14 +8,12 @@ const SearchTab = () => {
     return (
         <KeyboardAvoidingView style={{ paddingTop: 50, paddingHorizontal: 20, flex: 1 }}>
             <View style={{}}>
-                <TextInput
-
-
-                    label={"Search"} style={{ borderWidth: 2, borderColor: 'blue', borderBottomWidth: 2, borderRadius: 20, borderTopLeftRadius: 20, borderTopRightRadius: 20, backgroundColor: 'white' }} placeholder='Search here..' />
+                <TextInput autoFocus
+                    label={"Search"} style={{ backgroundColor: 'white' }} placeholder='Search here..' />
             </View>
             <ScrollView>
                 <TouchableOpacity>
-                    <Text>person 1</Text>
+                    <Text >person 1</Text>
                 </TouchableOpacity>
 
             </ScrollView>
