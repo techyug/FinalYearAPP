@@ -50,8 +50,6 @@ function App() {
         }} name="ForgotPass" component={ForgotPassScreen} />
         <Stack.Screen name='Register' options={{ headerShown: false, title: 'Regiter ', }} component={RegisterScreen} />
         <Stack.Screen name="Home" options={{ headerShown: false, }} component={HomeScreen} />
-
-
       </Stack.Navigator>
     </NavigationContainer>
   );

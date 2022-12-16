@@ -1,7 +1,9 @@
 import { Button, KeyboardAvoidingView, Dimensions, Platform, Pressable, StyleSheet, Text, TextInput, TouchableOpacity, View, ActivityIndicator } from 'react-native'
-import React from 'react'
+import React, { useEffect } from 'react'
 import { useState } from 'react'
-
+import axios from 'axios'
+import { serverIP } from '../Constants/IPofBackned'
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
 
@@ -16,8 +18,7 @@ const styles = StyleSheet.create({
     container: {
         padding: 20,
         borderRadius: 30,
-        minWidth: 400,
-        maxWidth: 1000,
+
         alignItems: 'center',
 
     },
@@ -35,7 +36,7 @@ const styles = StyleSheet.create({
 
     },
     inputContainer: {
-        width: '100%',
+
         alignSelf: 'center',
 
 
@@ -106,35 +107,52 @@ const styles = StyleSheet.create({
 })
 const LoginScreen = ({ navigation, route }) => {
 
-    const [userEmail, setUserEmail] = useState('');
+    const [userPhone, setUserPhone] = useState('');
     const [userPassword, setUserPassword] = useState('')
     const [error, setError] = useState(route.params ? route.params.message : "Login Please...")
     const [loading, setLoading] = useState(false)
 
-    // const window = Dimensions.get("window");
-    // const screen = Dimensions.get("screen");
-    // // console.warn(window, screen)
-    // const handleSignup = () => {
-    //     firebase
-    //         .auth()
-    //         .createUserWithEmailAndPassword(userEmail, userPassword).
-    //         then(() => navigation.replace('Home'))
-    //         .catch(error => setError(error.message))
+    const storeData = async (value) => {
+        try {
+            await AsyncStorage.setItem('@user_phone', value)
 
-    // };
-    // const handleLogin = () => {
-    //     firebase
-    //         .auth()
-    //         .signInWithWmailAndPassword(userEmail, userPassword)
-    //         .then(user => navigation.replace('Home'))
-    //         .catch(error => setError(error.message))
+        } catch (e) {
+            // saving error
+        }
+    }
+
+    // const getData = async () => {
+    //     try {
+    //         const value = await AsyncStorage.getItem('@user_phone')
+    //         if (value !== null) {
+    //             // value previously stored
+    //             setUserPhone(value);
+
+    //         }
+    //     } catch (e) {
+    //         // error reading value
+    //     }
     // }
+    useEffect(() => {
+        (async () => {
+            let value = await AsyncStorage.getItem('@user_phone')
+
+            if (value !== null) {
+                navigation.replace('Home');
+            }
+        })()
+
+
+
+
+    }, []);
+
 
 
     return (
         <View style={styles.main}>
             <View style={styles.AppNameContainer} >
-                <Text style={styles.AppName} >NIYO</Text>
+                <Text style={styles.AppName} >HelpMeet</Text>
             </View>
             <View style={{ color: 'red', alignSelf: 'center', padding: 10, backgroundColor: 'yellow', borderRadius: 10 }}>
                 <Text>{error}</Text>
@@ -149,9 +167,9 @@ const LoginScreen = ({ navigation, route }) => {
 
                 <View style={styles.inputContainer}>
                     <TextInput
-                        value={userEmail}
-                        onChangeText={(userEmail) => setUserEmail(userEmail)}
-                        placeholder='Email'
+                        value={userPhone}
+                        onChangeText={(userPhone) => setUserPhone(userPhone)}
+                        placeholder='Phone Number'
                         style={styles.input}
                     />
                     <TextInput
@@ -173,31 +191,24 @@ const LoginScreen = ({ navigation, route }) => {
                         // onPress={handleLogin}
                         onPress={() => {
                             setLoading(true);
-                            setTimeout(() => {
-                                if (userPassword === "ok") {
-                                    setError("Logging in ...")
-                                    setTimeout(() => navigation.replace('Home', {
-                                        screen: 'Profile',
-                                        params: { user: 'jane', userEmail: userEmail, },
-                                        userEmail: userEmail,
-                                    }), 200)
-                                } else {
-                                    setLoading(false);
-                                    setError("Wrong Password...")
+                            axios.post(serverIP + '/login', { user_phone: userPhone, user_pass: userPassword }).then(res => {
+                                // console.log(res.data);
+                                if (res.data === 'Login Success') {
+                                    storeData(userPhone);
+                                    navigation.replace('Home')
+                                }
+                                else {
+                                    setError("Wrong Password")
                                 }
 
-                            }, 400)
+                                setLoading(false)
+                            }).catch(err => {
+                                console.log(serverIP + '/login');
+                                console.log(err);
+                                setError(err);
+                                setLoading(false)
+                            })
 
-                            // navigation.replace('Home', {
-                            //     screen: 'Profile',
-                            //     params: { user: 'jane', userEmail: userEmail, },
-                            //     userEmail: userEmail,
-                            // });
-                            // navigation.replace('Home', {
-                            //     userEmail: userEmail,
-                            //     userPass: userPassword,
-                            //     otherParam: 'anything you want here',
-                            // })
 
                         }}
                     >

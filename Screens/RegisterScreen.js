@@ -1,6 +1,8 @@
-import { Button, KeyboardAvoidingView, Dimensions, Platform, Pressable, StyleSheet, Text, TextInput, TouchableOpacity, View, ActivityIndicator, Keyboard } from 'react-native'
+import { KeyboardAvoidingView, Dimensions, Platform, Pressable, StyleSheet, Text, TextInput, TouchableOpacity, View, ActivityIndicator, Keyboard } from 'react-native'
 import React from 'react'
 import { useState } from 'react'
+import axios from 'axios'
+
 
 const styles = StyleSheet.create({
     main: {
@@ -12,12 +14,6 @@ const styles = StyleSheet.create({
     container: {
 
         borderRadius: 30,
-
-
-
-        justifyContent: 'center',
-        alignItems: 'center',
-
         padding: 10,
     },
     AppNameContainer: {
@@ -26,9 +22,9 @@ const styles = StyleSheet.create({
         alignSelf: 'center',
 
         borderRadius: 50,
-        width: 100,
-        backgroundColor: 'rgb(200,20,10)',
-        height: 100,
+
+        backgroundColor: '#FF00BF',
+        padding: 10,
         justifyContent: 'center',
         alignItems: 'center',
 
@@ -119,17 +115,19 @@ const RegisterScreen = ({ navigation, params }) => {
     const [userEmail, setUserEmail] = useState('');
     const [conPassword, setconPassword] = useState('');
     const [userPassword, setUserPassword] = useState('')
-    const [loading, setLoading] = useState(false)
+    const [loading, setLoading] = useState(false);
+    const [userName, setUserName] = useState('');
+    const [userPhone, setUserPhone] = useState('');
     return (
 
         <View style={styles.main} >
             <View style={styles.AppNameContainer} >
-                <Text style={styles.AppName} >NIYO</Text>
+                <Text style={styles.AppName} >HelpMeet</Text>
             </View>
             <KeyboardAvoidingView
-                style={styles.container}
+            // style={styles.container}
 
-                behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+            // behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
 
             >
 
@@ -140,12 +138,27 @@ const RegisterScreen = ({ navigation, params }) => {
 
                     </View>
                     <TextInput
+                        value={userName}
+                        onChangeText={(userName) => setUserName(userName)}
+                        placeholder='Your Name'
+                        style={styles.input}
+
+                    />
+                    <TextInput
+                        value={userPhone}
+                        onChangeText={(userPhone) => setUserPhone(userPhone)}
+                        placeholder='Phone'
+                        style={styles.input}
+
+                    />
+                    <TextInput
                         value={userEmail}
                         onChangeText={(userEmail) => setUserEmail(userEmail)}
                         placeholder='Email'
                         style={styles.input}
 
                     />
+
                     <TextInput
                         value={userPassword}
                         onChangeText={(userPassword) => setUserPassword(userPassword)}
@@ -172,6 +185,17 @@ const RegisterScreen = ({ navigation, params }) => {
                             setLoading(true);
                             setTimeout(() => {
                                 if (conPassword === userPassword) {
+                                    axios.post("http://192.168.1.8:3000/user", {
+                                        user_name: userName,
+                                        user_email: userEmail,
+                                        user_phone: userPhone,
+                                        user_pass: userPassword
+
+                                    }).then((res) => {
+                                        console.warn(res)
+                                    }).catch((err) => {
+                                        console.warn(err)
+                                    })
                                     setError("Account Created....")
                                     setTimeout(() => navigation.navigate('Login', { message: 'Account Created, Login Now' }), 200)
                                 } else {
@@ -215,7 +239,7 @@ const RegisterScreen = ({ navigation, params }) => {
 
 
 
-            </KeyboardAvoidingView >
+            </ KeyboardAvoidingView>
             <View style={{ marginTop: 50, padding: 5, alignSelf: 'center' }}>
                 <Text>----------- or continue with -----------</Text>
                 <View>
