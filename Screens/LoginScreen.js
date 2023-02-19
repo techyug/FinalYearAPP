@@ -69,7 +69,6 @@ const styles = StyleSheet.create({
         alignItems: 'center'
     },
     button: {
-
         borderRadius: 10,
         margin: 5,
         borderColor: 'blue',
@@ -78,21 +77,16 @@ const styles = StyleSheet.create({
         paddingVertical: 8,
         color: 'gray',
         paddingHorizontal: 50,
-
     },
     loginButton: {
-
         borderRadius: 10,
         margin: 5,
         width: 200,
         height: 50,
         alignItems: 'center',
         backgroundColor: 'rgb(246,106,104)',
-
         justifyContent: 'center',
-
         elevation: 15
-
     },
     forgetButton: {
         alignSelf: 'flex-end',

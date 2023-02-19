@@ -1,6 +1,6 @@
 import { StyleSheet, Button, Image, Text, View, TouchableOpacity, } from 'react-native'
 import React, { useEffect } from 'react'
-import * as Battery from 'expo-battery';
+
 import { useNavigation } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import IonIcon from 'react-native-vector-icons/Ionicons';

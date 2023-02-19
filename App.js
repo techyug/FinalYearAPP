@@ -6,20 +6,8 @@ import HomeScreen from './Screens/HomeScreen';
 import ForgotPassScreen from './Screens/ForgotPassScreen';
 import LoginScreen from './Screens/LoginScreen';
 import RegisterScreen from './Screens/RegisterScreen';
-// import { initializeApp } from "firebase/app";
+import service from './Screens/service';
 
-
-// const firebaseConfig = {
-//   apiKey: "AIzaSyA5XxiYASALjZRBq2gUg1oyQ458VwmvixI",
-//   authDomain: "finalyearapp-9203c.firebaseapp.com",
-//   projectId: "finalyearapp-9203c",
-//   storageBucket: "finalyearapp-9203c.appspot.com",
-//   messagingSenderId: "307395449288",
-//   appId: "1:307395449288:web:7c888a2996df292d2b70fd",
-//   measurementId: "G-T69SV41F3Y"
-// };
-
-// initializeApp(firebaseConfig);
 
 
 const Stack = createNativeStackNavigator();
@@ -50,6 +38,7 @@ function App() {
         }} name="ForgotPass" component={ForgotPassScreen} />
         <Stack.Screen name='Register' options={{ headerShown: false, title: 'Regiter ', }} component={RegisterScreen} />
         <Stack.Screen name="Home" options={{ headerShown: false, }} component={HomeScreen} />
+        <Stack.Screen name='Service' component={service} />
       </Stack.Navigator>
     </NavigationContainer>
   );

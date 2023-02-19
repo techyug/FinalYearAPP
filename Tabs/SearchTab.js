@@ -3,7 +3,16 @@ import React from 'react'
 import { Button, TextInput } from 'react-native-paper'
 
 
+const Person = () => {
+    return (
+        <View>
+
+            <Text>Yogendra singh</Text>
+        </View>
+    )
+}
 const SearchTab = () => {
+
     const styles = StyleSheet.create({})
     return (
         <KeyboardAvoidingView style={{ paddingTop: 50, paddingHorizontal: 20, flex: 1 }}>
@@ -13,7 +22,7 @@ const SearchTab = () => {
             </View>
             <ScrollView>
                 <TouchableOpacity>
-                    <Text >person 1</Text>
+                    <Person />
                 </TouchableOpacity>
 
             </ScrollView>

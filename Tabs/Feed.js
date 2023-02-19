@@ -5,6 +5,7 @@ import axios from 'axios';
 import { serverIP } from '../Constants/IPofBackned';
 
 import { FlatGrid } from 'react-native-super-grid';
+import { useNavigation } from '@react-navigation/native';
 
 const styles = StyleSheet.create({
     feedScreen: {
@@ -14,6 +15,7 @@ const styles = StyleSheet.create({
     ,
     AppName: {
         fontSize: 40,
+        paddingLeft: 20,
         fontWeight: '900',
         color: 'rgb(255,0,100)',
         alignSelf: 'flex-start'
@@ -51,10 +53,13 @@ const styles = StyleSheet.create({
 
 });
 
-
-
 const Feed = () => {
+    const navigation = useNavigation();
 
+
+    const navigateToStackScreen = () => {
+        navigation.navigate('Service');
+    }
     const [CategoriesData, setCategoryData] = useState([]);
 
     if (CategoriesData.length < 1) {
@@ -68,12 +73,10 @@ const Feed = () => {
             })
     }
 
-
-
     return (
         <View style={styles.feedScreen} >
             <View style={{ flexDirection: 'row', width: '100%', justifyContent: 'space-around', marginBottom: 10 }}>
-                <Text style={styles.AppName}>NIYO</Text>
+                <Text style={styles.AppName}>HelpMeet</Text>
                 <View style={{ borderWidth: 0, width: '70%', justifyContent: 'center', alignItems: 'center', paddingRight: 10 }}>
                 </View>
             </View>
@@ -115,7 +118,9 @@ const Feed = () => {
                 renderItem={(item) => (
                     <TouchableOpacity
                         activeOpacity={0.5}
-                        onPress={() => { alert('Clicked on ' + item.item.service_title) }}
+
+                        onPress={navigateToStackScreen
+                        }
                         style={styles.CatFlex}>
                         <Image
                             source={{ uri: item.item.service_img }}
