@@ -9,8 +9,11 @@ import { useNavigation } from '@react-navigation/native';
 
 const styles = StyleSheet.create({
     feedScreen: {
+        flex:1,
         paddingTop: 40,
-        paddingHorizontal: 10
+        paddingHorizontal: 10,
+        backgroundColor:'white'
+        
     }
     ,
     AppName: {
@@ -47,6 +50,9 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         backgroundColor: 'white',
+        borderWidth:1,
+        borderColor:'rgb(255,0,100)',
+        elevation:10
 
     },
 
@@ -57,22 +63,20 @@ const Feed = () => {
     const navigation = useNavigation();
 
 
-    const navigateToStackScreen = () => {
-        navigation.navigate('Service');
-    }
+    
     const [CategoriesData, setCategoryData] = useState([]);
 
     if (CategoriesData.length < 1) {
         axios.get(serverIP + '/services/')
             .then(res => {
                 setCategoryData(res.data);
-
+               
             }).catch(err => {
                 console.log(serverIP + '/login');
                 console.log(err);
             })
     }
-
+    console.log(CategoriesData[0])
     return (
         <View style={styles.feedScreen} >
             <View style={{ flexDirection: 'row', width: '100%', justifyContent: 'space-around', marginBottom: 10 }}>
@@ -115,18 +119,23 @@ const Feed = () => {
                 // staticDimension={440}
                 fixed
                 spacing={5}
-                renderItem={(item) => (
+                renderItem={({item,index}) => (
                     <TouchableOpacity
                         activeOpacity={0.5}
 
-                        onPress={navigateToStackScreen
+                        onPress={()=>
+                            {
+                            navigation.navigate('Service',{
+                            ServiceData:item
+                          });
+                        }
                         }
                         style={styles.CatFlex}>
                         <Image
-                            source={{ uri: item.item.service_img }}
+                            source={{ uri: item.service_img }}
                             style={{ width: 60, height: 60, borderRadius: 10 }}
                         />
-                        <Text style={{ fontWeight: 'bold' }} >{item.item.service_title}</Text>
+                        <Text style={{ fontWeight: 'bold' }} >{item.service_title}</Text>
                     </TouchableOpacity>
                 )}
             />

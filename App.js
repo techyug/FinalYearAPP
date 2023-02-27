@@ -6,7 +6,7 @@ import HomeScreen from './Screens/HomeScreen';
 import ForgotPassScreen from './Screens/ForgotPassScreen';
 import LoginScreen from './Screens/LoginScreen';
 import RegisterScreen from './Screens/RegisterScreen';
-import service from './Screens/service';
+import ServiceScreen from './Screens/ServiceScreen';
 
 
 
@@ -38,7 +38,7 @@ function App() {
         }} name="ForgotPass" component={ForgotPassScreen} />
         <Stack.Screen name='Register' options={{ headerShown: false, title: 'Regiter ', }} component={RegisterScreen} />
         <Stack.Screen name="Home" options={{ headerShown: false, }} component={HomeScreen} />
-        <Stack.Screen name='Service' component={service} />
+        <Stack.Screen name='Service' component={ServiceScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );
