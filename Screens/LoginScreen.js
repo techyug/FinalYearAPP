@@ -7,15 +7,11 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useDispatch, useSelector } from 'react-redux'
 import { userLogin } from '../Redux/actions'
 
-
-
 const styles = StyleSheet.create({
     main: {
         flex: 1,
         justifyContent: 'center',
         backgroundColor: 'white',
-
-
     },
     container: {
         padding: 20,
@@ -38,18 +34,13 @@ const styles = StyleSheet.create({
 
     },
     inputContainer: {
-
         alignSelf: 'center',
-
-
         paddingHorizontal: 10,
         paddingTop: 30,
         borderRadius: 10,
         backgroundColor: 'rgba(200,238,242,1)',
         justifyContent: 'center',
         alignItems: 'center',
-
-
     },
     input: {
         marginBottom: 10,
@@ -136,7 +127,7 @@ const LoginScreen = ({ navigation, route }) => {
                 const userData = JSON.parse(value);
                 dispatch(userLogin(userData));
                 navigation.replace('Home')
-                console.log("user data from storage :",userData)
+             
 
             }
         })()
@@ -185,7 +176,7 @@ const LoginScreen = ({ navigation, route }) => {
                         onPress={() => {
                             setLoading(true);
                             axios.post(serverIP + '/login', { user_phone: userPhone, user_pass: userPassword }).then(res => {
-                                console.log(res.data);
+                               
                                 if (res.data.msg === 'Login Success') {
                                     storeData(res.data);
                                     dispatch(userLogin(res.data))
@@ -198,7 +189,7 @@ const LoginScreen = ({ navigation, route }) => {
                                 setLoading(false)
                             }).catch(err => {
                                 console.log(serverIP + '/login');
-                                console.log(err);
+                               
                                 setError(err);
                                 setLoading(false)
                             })

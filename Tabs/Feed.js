@@ -1,6 +1,6 @@
 import { StyleSheet, FlatList, TouchableOpacity, Image, Text, View, StatusBar } from 'react-native'
 
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import axios from 'axios';
 import { serverIP } from '../Constants/IPofBackned';
 
@@ -40,22 +40,17 @@ const styles = StyleSheet.create({
     },
     CatFlex: {
         height: 100,
-
         width: 100,
         color: 'black',
         margin: 4,
         padding: 10,
         borderRadius: 20,
-
-
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: 'white',
+        backgroundColor: 'rgba(255,255,255,1)',
         borderWidth:1,
-        borderColor:'rgb(255,0,100)',
-        elevation:10,
-        
-
+        borderColor:'white',
+        elevation:4,
     },
 
 
@@ -64,11 +59,7 @@ const styles = StyleSheet.create({
 const Feed = () => {
     const navigation = useNavigation();
     const userData = useSelector(state=>state.userData)
-    console.log(userData)
-
-    
     const [CategoriesData, setCategoryData] = useState([]);
-
     if (CategoriesData.length < 1) {
         axios.get(serverIP + '/services/')
             .then(res => {
@@ -79,10 +70,12 @@ const Feed = () => {
                 console.log(err);
             })
     }
-    console.log(CategoriesData[0])
+    
+   
     return (
         <View style={styles.feedScreen} >
             <StatusBar barStyle={'default'} />
+            
             <View style={{ flexDirection: 'row', width: '100%', justifyContent: 'space-around', marginBottom: 0 }}>
                 <Text style={styles.AppName}>HelpMeet</Text>
 
@@ -91,26 +84,19 @@ const Feed = () => {
                 </View>
             </View>
             <Text style={{fontSize:20,fontWeight:'bold',color:'blue'}}>Welcome {userData.user_name}</Text>
-
-            
             <FlatGrid
                 itemDimension={100}
                 data={CategoriesData}
                 style={styles.gridView}
-                // staticDimension={440}
-                fixed
                 spacing={5}
                 renderItem={({item,index}) => (
                     <TouchableOpacity
                         activeOpacity={0.5}
-
-                        onPress={()=>
-                            {
+                        onPress={()=>{
                             navigation.navigate('Service',{
                             ServiceData:item
                           });
-                        }
-                        }
+                        }}
                         style={styles.CatFlex}>
                         <Image
                             source={{ uri: item.service_img }}
@@ -123,10 +109,5 @@ const Feed = () => {
         </View>
     )
 }
-
-
-
-
-
 export default Feed
 

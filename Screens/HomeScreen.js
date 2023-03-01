@@ -14,11 +14,9 @@ import { useSelector } from 'react-redux';
 const Tab = createMaterialBottomTabNavigator();
 
 export default function HomeScreen() {
-    // navigation.navigate('Login');
-    // console.warn(route.params);
-   // console.log(props.route.params.userData)
+
    const userData = useSelector((state=>state.userData))
-  // const userData = props.route.params.userData;
+
    if(userData.role=="user"){
     return (
         <Tab.Navigator 
@@ -32,11 +30,10 @@ export default function HomeScreen() {
     );
    }
    else return (
-    <Tab.Navigator>
-        <Tab.Screen options={{ tabBarIcon: 'view-dashboard', title: 'Dashbord' }}  name="Dashbord" component={ServiceProviderDashBord} />
+    <Tab.Navigator >
+        <Tab.Screen options={{ tabBarIcon: 'view-dashboard', title: 'Dashbord', }}  name="Dashbord" component={ServiceProviderDashBord} />
         <Tab.Screen options={{ tabBarIcon: 'book-clock-outline', title: 'Bookings' }} name="Bookings" component={MyBookings} />
         <Tab.Screen options={{ tabBarIcon: 'chat-outline', title: 'Conversation' }} name="Conversation" component={Conversations} />
-
     </Tab.Navigator>
    )
     

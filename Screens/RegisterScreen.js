@@ -129,8 +129,10 @@ const RegisterScreen = ({ navigation, params }) => {
     }, [])
     console.log(isProvider)
     return (
+<KeyboardAvoidingView style={styles.main} behavior='position'>
 
-        <View style={styles.main} >
+
+        <View >
             <View style={styles.AppNameContainer} >
                 <Text style={styles.AppName} >HelpMeet</Text>
             </View>
@@ -355,7 +357,7 @@ const RegisterScreen = ({ navigation, params }) => {
                 <Text style={{ color: 'blue' }} > Sign In Here...</Text>
             </TouchableOpacity>
         </View >
-
+        </KeyboardAvoidingView>
     )
 }
 

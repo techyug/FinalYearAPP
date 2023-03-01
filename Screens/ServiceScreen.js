@@ -11,13 +11,9 @@ const ServiceScreen = (props) => {
     const [loaded, setloaded] = useState(false)
 
     if (serviceData == undefined) {
-       
         setServiceData(props.route.params.ServiceData)
     }
-   
-
     useEffect(() => {
-
         navigation.setOptions({ title: serviceData.service_title })
         if (!loaded) {
             axios.get(serverIP + '/service-providers/' + serviceData.service_id)
