@@ -4,82 +4,54 @@ import React, { useEffect } from 'react'
 import { useNavigation } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import IonIcon from 'react-native-vector-icons/Ionicons';
-
-
-
-
 import { useState } from 'react'
 import axios from 'axios';
 import { serverIP } from '../Constants/IPofBackned';
+import { useDispatch, useSelector } from 'react-redux';
+import { userLogout } from '../Redux/actions';
+const styles = StyleSheet.create({
+    profileTab: {
+        flex: 1,
+        alignItems: "center",
+        padding: 20,
+        paddingTop: 40
+    },
+    userdetails: {
+        paddingTop: 20,
+        backgroundColor: "#fff",
+        borderRadius: 10,
+
+        width: '100%',
+        alignItems: 'center',
+        height: '80%'
+    },
+    userAction: {
+
+        width: "90%",
+        justifyContent: 'space-between',
+        padding: 10,
+        flexDirection: 'row',
+        backgroundColor: '#f97',
+        paddingVertical: 10,
+        borderRadius: 8,
+        margin: 1
+    }
+})
+
 const Proflletab = () => {
-
     const navigation = useNavigation();
-    const [userPhone, setUserPhone] = useState('');
-    const [user, setUser] = useState(null);
     const default_profile = "https://i.stack.imgur.com/34AD2.jpg"
+    const dispatch = useDispatch();
+    const user  = useSelector(state=>state.userData)
 
-
-    const getData = async () => {
-        try {
-            const value = await AsyncStorage.getItem('@user_phone')
-            if (value !== null) {
-                // value previously stored
-                setUserPhone(value);
-            }
-
-        } catch (e) {
-            // error reading value
-            console.log(e)
-
-        }
-    }
-    const removeItem = async () => {
-        await AsyncStorage.removeItem('@user_phone')
-    }
-    const styles = StyleSheet.create({
-        profileTab: {
-            flex: 1,
-            alignItems: "center",
-            padding: 20,
-            paddingTop: 40
-        },
-        userdetails: {
-            paddingTop: 20,
-            backgroundColor: "#fff",
-            borderRadius: 10,
-
-            width: '100%',
-            alignItems: 'center',
-            height: '80%'
-        },
-        userAction: {
-
-            width: "90%",
-            justifyContent: 'space-between',
-            padding: 10,
-            flexDirection: 'row',
-            backgroundColor: '#f97',
-            paddingVertical: 10,
-            borderRadius: 8,
-            margin: 1
-
-
-
-        }
-    })
-    if (user === null) {
-        getData();
-        axios.get(serverIP + '/user/' + userPhone, {})
-            .then(res => {
-                setUser(res.data);
-            }).catch(err => {
-                console.log(serverIP + '/login');
-                console.log(err);
-            })
-    }
+    const userLogoutConstant = ()=>{
+        dispatch(userLogout())
+        AsyncStorage.removeItem('@userData');
+        navigation.replace('Login')
+    }  
     return (
         <View style={styles.profileTab}>
-            {user ?
+            {user?
                 (
                     <View style={styles.userdetails} >
 
@@ -106,12 +78,7 @@ const Proflletab = () => {
                             <Text style={{ color: 'white', fontWeight: '600', fontSize: 18, }}>{">"}</Text>
                         </TouchableOpacity>
 
-                        <TouchableOpacity style={{ backgroundColor: 'gray', flexDirection: 'row', width: "80%", padding: 10, borderRadius: 10, justifyContent: 'space-between', paddingHorizontal: 20, alignItems: 'center', position: 'absolute', bottom: 0 }} activeOpacity={0.6} onPress={() => {
-                            removeItem();
-                            navigation.replace('Login')
-
-
-                        }}  >
+                        <TouchableOpacity style={{ backgroundColor: 'gray', flexDirection: 'row', width: "80%", padding: 10, borderRadius: 10, justifyContent: 'space-between', paddingHorizontal: 20, alignItems: 'center', position: 'absolute', bottom: 0 }} activeOpacity={0.6} onPress={userLogoutConstant}  >
 
                             <Text style={{ color: 'white', fontSize: 20, fontWeight: '500' }}>Logout</Text>
                             <IonIcon name='exit' size={30} color={'white'} />

@@ -2,6 +2,7 @@ import { KeyboardAvoidingView, Dimensions, Platform, Pressable, StyleSheet, Text
 import React, { useEffect } from 'react'
 import { useState } from 'react'
 import axios from 'axios'
+import { serverIP } from '../Constants/IPofBackned'
 
 const styles = StyleSheet.create({
     main: {
@@ -90,7 +91,7 @@ const styles = StyleSheet.create({
         width: 200,
         paddingVertical: 15,
         alignItems: 'center',
-        backgroundColor: 'rgb(246,106,104)',
+        backgroundColor: '#FF00BF',
 
         justifyContent: 'center',
 
@@ -135,20 +136,20 @@ const RegisterScreen = ({ navigation, params }) => {
             </View>
 
 
-            <View style={{ flexDirection: 'row', width: '100%', backgroundColor: 'rgb(100,0,200)', justifyContent: 'space-evenly', padding: 10, marginVertical: 10, borderRadius: 20 }}>
+            <View style={{ flexDirection: 'row', width: '100%', backgroundColor: 'rgba(200,238,242,1)', justifyContent: 'space-evenly', padding: 10, marginVertical: 10, borderRadius: 20 }}>
                 <TouchableOpacity onPress={() => setIsProvider(false)}>
-                    <View style={{ padding: 10, borderRadius: 10, backgroundColor: !isProvider ? 'lightgreen' : 'rgba(250,250,250,0.5)', paddingHorizontal: 20 }} >
-                        <Text style={{ color: isProvider ? 'rgb(100,0,200)' : 'black' }}>Normal user</Text>
+                    <View style={{ padding: 10, borderRadius: 10, backgroundColor: !isProvider ? '#0e5beb' : 'rgba(255,255,255,0.7)', paddingHorizontal: 20 }} >
+                        <Text style={{ color: isProvider ? 'rgb(0,0,0)' : 'white' }}>Normal user</Text>
                     </View>
                 </TouchableOpacity>
                 <TouchableOpacity onPress={() => setIsProvider(true)}>
-                    <View style={{ padding: 10, borderRadius: 10, backgroundColor: !isProvider ? 'rgba(250,250,250,0.5)' : 'lightgreen', paddingHorizontal: 20 }}>
-                        <Text style={{ color: isProvider ? 'black' : 'rgb(100,0,200)' }}>Service Provider </Text>
+                    <View style={{ padding: 10, borderRadius: 10, backgroundColor: !isProvider ? 'rgba(255,255,255,0.7)' : '#0e5beb', paddingHorizontal: 20 }}>
+                        <Text style={{ color: isProvider ? 'white' : 'rgb(0,0,0)' }}>Service Provider </Text>
                     </View>
                 </TouchableOpacity>
             </View>
             {
-                isProvider &&
+                !isProvider &&
                 <View style={styles.inputContainer}>
                     <TextInput
                         value={userName}
@@ -157,7 +158,7 @@ const RegisterScreen = ({ navigation, params }) => {
                         style={styles.input}
 
                     />
-                    <Text>jbcjd</Text>
+                    
                     <TextInput
                         value={userPhone}
                         onChangeText={(userPhone) => setUserPhone(userPhone)}
@@ -190,7 +191,6 @@ const RegisterScreen = ({ navigation, params }) => {
 
                         secureTextEntry
                     />
-
                     <TouchableOpacity
                         style={{ marginVertical: 20 }}
                         activeOpacity={0.6}
@@ -199,7 +199,7 @@ const RegisterScreen = ({ navigation, params }) => {
                             setLoading(true);
                             setTimeout(() => {
                                 if (conPassword === userPassword) {
-                                    axios.post("http://192.168.1.8:3000/user", {
+                                    axios.post(serverIP+"/user", {
                                         user_name: userName,
                                         user_email: userEmail,
                                         user_phone: userPhone,
@@ -244,7 +244,7 @@ const RegisterScreen = ({ navigation, params }) => {
                 </View>
             }
             {
-                !isProvider &&
+                isProvider &&
                 <View style={styles.inputContainer}>
                     <TextInput
                         value={userName}
@@ -294,14 +294,14 @@ const RegisterScreen = ({ navigation, params }) => {
                             setLoading(true);
                             setTimeout(() => {
                                 if (conPassword === userPassword) {
-                                    axios.post("http://192.168.1.8:3000/user", {
-                                        user_name: userName,
-                                        user_email: userEmail,
-                                        user_phone: userPhone,
-                                        user_pass: userPassword
+                                    axios.post(serverIP+"/service-provider", {
+                                        ServiceProvideName: userName,
+                                        ServiceProviderEmail: userEmail,
+                                        ServiceProviderPhone: userPhone,
+                                        ServiceProviderPassword: userPassword
 
                                     }).then((res) => {
-                                        console.warn(res)
+                                        console.warn("Service Provider Crearted")
                                     }).catch((err) => {
                                         console.warn(err)
                                     })
@@ -331,7 +331,7 @@ const RegisterScreen = ({ navigation, params }) => {
                             />
                         ) : (
                             <View style={styles.loginButton}>
-                                <Text style={{ color: 'white', fontSize: 20, fontWeight: '900' }} >Sign up</Text>
+                                <Text style={{ color: 'white', fontSize: 18, fontWeight: '900' }} >Sign up as Provider</Text>
                             </View>
                         )
                         }

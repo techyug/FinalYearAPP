@@ -4,6 +4,8 @@ import { useState } from 'react'
 import axios from 'axios'
 import { serverIP } from '../Constants/IPofBackned'
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useDispatch, useSelector } from 'react-redux'
+import { userLogin } from '../Redux/actions'
 
 
 
@@ -100,16 +102,15 @@ const styles = StyleSheet.create({
     }
 })
 const LoginScreen = ({ navigation, route }) => {
-
+   const dispatch = useDispatch();
     const [userPhone, setUserPhone] = useState('');
     const [userPassword, setUserPassword] = useState('')
     const [error, setError] = useState(route.params ? route.params.message : "Login Please...")
     const [loading, setLoading] = useState(false)
 
-    const storeData = async (value) => {
+    const storeData = async (data) => {
         try {
-            await AsyncStorage.setItem('@user_phone', value)
-
+            await AsyncStorage.setItem('@userData', JSON.stringify(data))
         } catch (e) {
             // saving error
         }
@@ -127,18 +128,18 @@ const LoginScreen = ({ navigation, route }) => {
     //         // error reading value
     //     }
     // }
+    
     useEffect(() => {
         (async () => {
-            let value = await AsyncStorage.getItem('@user_phone')
-
+            let value = await AsyncStorage.getItem('@userData')
             if (value !== null) {
-                navigation.replace('Home');
+                const userData = JSON.parse(value);
+                dispatch(userLogin(userData));
+                navigation.replace('Home')
+                console.log("user data from storage :",userData)
+
             }
         })()
-
-
-
-
     }, []);
 
 
@@ -153,9 +154,7 @@ const LoginScreen = ({ navigation, route }) => {
             </View>
             <KeyboardAvoidingView
                 style={styles.container}
-
                 behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-
             >
 
 
@@ -186,13 +185,14 @@ const LoginScreen = ({ navigation, route }) => {
                         onPress={() => {
                             setLoading(true);
                             axios.post(serverIP + '/login', { user_phone: userPhone, user_pass: userPassword }).then(res => {
-                                // console.log(res.data);
-                                if (res.data === 'Login Success') {
-                                    storeData(userPhone);
+                                console.log(res.data);
+                                if (res.data.msg === 'Login Success') {
+                                    storeData(res.data);
+                                    dispatch(userLogin(res.data))
                                     navigation.replace('Home')
                                 }
                                 else {
-                                    setError("Wrong Password")
+                                    setError(res.data.msg)
                                 }
 
                                 setLoading(false)

@@ -1,4 +1,4 @@
-import { StyleSheet, FlatList, TouchableOpacity, Image, Text, View } from 'react-native'
+import { StyleSheet, FlatList, TouchableOpacity, Image, Text, View, StatusBar } from 'react-native'
 
 import React, { useState } from 'react'
 import axios from 'axios';
@@ -6,12 +6,13 @@ import { serverIP } from '../Constants/IPofBackned';
 
 import { FlatGrid } from 'react-native-super-grid';
 import { useNavigation } from '@react-navigation/native';
+import { useSelector } from 'react-redux';
 
 const styles = StyleSheet.create({
     feedScreen: {
         flex:1,
-        paddingTop: 40,
-        paddingHorizontal: 10,
+        paddingTop: 10,
+        paddingHorizontal: 20,
         backgroundColor:'white'
         
     }
@@ -52,7 +53,8 @@ const styles = StyleSheet.create({
         backgroundColor: 'white',
         borderWidth:1,
         borderColor:'rgb(255,0,100)',
-        elevation:10
+        elevation:10,
+        
 
     },
 
@@ -61,7 +63,8 @@ const styles = StyleSheet.create({
 
 const Feed = () => {
     const navigation = useNavigation();
-
+    const userData = useSelector(state=>state.userData)
+    console.log(userData)
 
     
     const [CategoriesData, setCategoryData] = useState([]);
@@ -79,39 +82,17 @@ const Feed = () => {
     console.log(CategoriesData[0])
     return (
         <View style={styles.feedScreen} >
-            <View style={{ flexDirection: 'row', width: '100%', justifyContent: 'space-around', marginBottom: 10 }}>
+            <StatusBar barStyle={'default'} />
+            <View style={{ flexDirection: 'row', width: '100%', justifyContent: 'space-around', marginBottom: 0 }}>
                 <Text style={styles.AppName}>HelpMeet</Text>
+
                 <View style={{ borderWidth: 0, width: '70%', justifyContent: 'center', alignItems: 'center', paddingRight: 10 }}>
+                    
                 </View>
             </View>
-            <View>
+            <Text style={{fontSize:20,fontWeight:'bold',color:'blue'}}>Welcome {userData.user_name}</Text>
 
-                {/* <FlatList
-                    data={CategoriesData}
-                    horizontal
-                    showsHorizontalScrollIndicator={false}
-                    style={{ backgroundColor: 'rgba(240,0,0,0.05)', borderRadius: 10, flexDirection: 'row', padding: 5, }}
-                    renderItem={(item) => {
-                        return (
-                            <TouchableOpacity
-                                activeOpacity={0.5}
-
-                                onPress={() => { alert('Clicked on ' + item.item.service_title) }}
-                                style={styles.CatFlex}>
-                                <Image
-                                    source={{ uri: item.item.service_img }}
-                                    style={{ width: 60, height: 60, borderRadius: 10 }}
-                                />
-                                <Text style={{ fontWeight: 'bold' }} >{item.item.service_title}</Text>
-                            </TouchableOpacity>
-
-
-                        );
-                    }}
-                    keyExtractor={(cat) => { return cat.service_id; }}
-                /> */}
-
-            </View>
+            
             <FlatGrid
                 itemDimension={100}
                 data={CategoriesData}

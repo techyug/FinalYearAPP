@@ -6,17 +6,16 @@ import HomeScreen from './Screens/HomeScreen';
 import ForgotPassScreen from './Screens/ForgotPassScreen';
 import LoginScreen from './Screens/LoginScreen';
 import RegisterScreen from './Screens/RegisterScreen';
-import ServiceScreen from './Screens/ServiceScreen';
-
-
-
+import ServiceScreen from './Screens/ServiceScreen'
+import { Provider } from 'react-redux';
+import { store } from './Redux/store';
 const Stack = createNativeStackNavigator();
 
-
 function App() {
-
+ 
   return (
-    <NavigationContainer>
+    <Provider store={store} >
+      <NavigationContainer>
       <Stack.Navigator initialRouteName='Login'>
         <Stack.Screen options={{ headerShown: false }} name="Login" component={LoginScreen} />
         <Stack.Screen options={{
@@ -41,6 +40,7 @@ function App() {
         <Stack.Screen name='Service' component={ServiceScreen} />
       </Stack.Navigator>
     </NavigationContainer>
+    </Provider>
   );
 }
 

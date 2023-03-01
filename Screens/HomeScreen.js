@@ -5,28 +5,43 @@ import Feed from '../Tabs/Feed';
 import SearchTab from '../Tabs/SearchTab';
 import Proflletab from '../Tabs/Proflletab';
 import { useNavigation } from '@react-navigation/native';
+import ServiceProviderDashBord from '../TabServiceProvider/ServiceProviderDashBord';
+import MyBookings from '../TabServiceProvider/MyBookings';
+import Conversations from '../TabServiceProvider/Conversations';
+import { useSelector } from 'react-redux';
 
 
 const Tab = createMaterialBottomTabNavigator();
 
-export default function HomeScreen({ navigation, route }) {
+export default function HomeScreen() {
     // navigation.navigate('Login');
     // console.warn(route.params);
-    const screenProps = route.params;
-    
-
-
+   // console.log(props.route.params.userData)
+   const userData = useSelector((state=>state.userData))
+  // const userData = props.route.params.userData;
+   if(userData.role=="user"){
     return (
-
-        <Tab.Navigator activeColor="rgb(255,255,255)"
-            inactiveColor="rgba(80,0,0,1)"
-
-            barStyle={{ backgroundColor: 'rgb(210,0,100)', height: 50, }}
+        <Tab.Navigator 
+            barStyle={{ backgroundColor: 'rgb(210,0,100)' }}
         >
-            <Tab.Screen options={{ tabBarIcon: 'home', title: 'Home' }} initialParams={screenProps} name="Feed" component={Feed} />
+            <Tab.Screen options={{ tabBarIcon: 'home', title: 'Home' }}  name="Feed" component={Feed} />
             <Tab.Screen options={{ tabBarIcon: 'cloud-search' }} name="Search" component={SearchTab} />
             <Tab.Screen options={{ tabBarIcon: 'account', title: 'Profile' }} name="Profile" component={Proflletab} />
         </Tab.Navigator >
 
     );
+   }
+   else return (
+    <Tab.Navigator>
+        <Tab.Screen options={{ tabBarIcon: 'view-dashboard', title: 'Dashbord' }}  name="Dashbord" component={ServiceProviderDashBord} />
+        <Tab.Screen options={{ tabBarIcon: 'book-clock-outline', title: 'Bookings' }} name="Bookings" component={MyBookings} />
+        <Tab.Screen options={{ tabBarIcon: 'chat-outline', title: 'Conversation' }} name="Conversation" component={Conversations} />
+
+    </Tab.Navigator>
+   )
+    
+    
+
+    
+   
 }
