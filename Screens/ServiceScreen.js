@@ -23,7 +23,6 @@ const ServiceScreen = (props) => {
                 .then(res => {
                     let arr = res.data;
                     setServiceProviders(arr)
-                    console.log(arr)
                     setloaded(true)
 
                 }).catch(err => {
@@ -47,7 +46,9 @@ const ServiceScreen = (props) => {
                     <RefreshControl refreshing={!loaded} onRefresh={onRefresh} />
                   }
                 renderItem={({item,index}) => (
-                    <TouchableOpacity activeOpacity={0.4}>
+                    <TouchableOpacity activeOpacity={0.4} onPress={()=>{
+                        navigation.navigate('ProviderShowCase',{ProviderData:item})
+                    }}>
                         <View style={{ flexDirection: 'row', justifyContent: 'space-between', padding: 10, borderWidth: 0, margin: 2, backgroundColor: 'rgba(0,0,0,0.1)', borderRadius: 10 ,height:80,alignItems:'center'}}>
                             
                             <Image

@@ -1,4 +1,4 @@
-import { KeyboardAvoidingView, Dimensions, Platform, Pressable, StyleSheet, Text, TextInput, TouchableOpacity, View, ActivityIndicator, Keyboard } from 'react-native'
+import { KeyboardAvoidingView, Dimensions, Platform, Pressable, StyleSheet, Text, TextInput, TouchableOpacity, View, ActivityIndicator, Keyboard, ScrollView } from 'react-native'
 import React, { useEffect } from 'react'
 import { useState } from 'react'
 import axios from 'axios'
@@ -7,7 +7,7 @@ import { serverIP } from '../Constants/IPofBackned'
 const styles = StyleSheet.create({
     main: {
         flex: 1,
-        paddingTop: 30,
+        paddingTop: 10,
         backgroundColor: 'white',
         paddingHorizontal: 20
 
@@ -43,9 +43,9 @@ const styles = StyleSheet.create({
     inputContainer: {
         width: '100%',
         alignSelf: 'center',
-        elevation:8,
-        borderColor:'white',
-        borderWidth:2,
+        elevation: 8,
+        borderColor: 'white',
+        borderWidth: 2,
         margin: 10,
         paddingHorizontal: 10,
         paddingTop: 30,
@@ -121,9 +121,51 @@ const RegisterScreen = ({ navigation, params }) => {
     const [userName, setUserName] = useState('');
     const [userPhone, setUserPhone] = useState('');
     const [isProvider, setIsProvider] = useState(false)
+    const handleRegisterUser = () => {
+        setLoading(true);
+        if (conPassword === userPassword) {
+            axios.post(serverIP + "/user", {
+                user_name: userName,
+                user_email: userEmail,
+                user_phone: userPhone,
+                user_pass: userPassword
+
+            }).then((res) => {
+                console.warn(res)
+            }).catch((err) => {
+                console.warn(err)
+            })
+            setError("Account Created....")
+            setTimeout(() => navigation.navigate('Login', { message: 'Account Created, Login Now' }), 200)
+        } else {
+            setLoading(false);
+            setError("Password Mismatch")
+        }
+    }
+    const handleRegisterProvider = () => {
+        setLoading(true);
+            if (conPassword === userPassword) {
+                axios.post(serverIP + "/service-provider", {
+                    ServiceProvideName: userName,
+                    ServiceProviderEmail: userEmail,
+                    ServiceProviderPhone: userPhone,
+                    ServiceProviderPassword: userPassword
+
+                }).then((res) => {
+                    console.warn("Service Provider Crearted")
+                }).catch((err) => {
+                    console.warn(err)
+                })
+                setError("Account Created....")
+                setTimeout(() => navigation.navigate('Login', { message: 'Account Created, Login Now' }), 200)
+            } else {
+                setLoading(false);
+                setError("Password Mismatch")
+            }
+    }
 
     return (
-        <KeyboardAvoidingView style={styles.main} behavior='position'>
+        <ScrollView style={styles.main} >
             <View >
                 <View style={styles.AppNameContainer} >
                     <Text style={styles.AppName} >HelpMeet</Text>
@@ -140,15 +182,13 @@ const RegisterScreen = ({ navigation, params }) => {
                         </View>
                     </TouchableOpacity>
                 </View>
-                {
-                    !isProvider &&
+                
                     <View style={styles.inputContainer}>
                         <TextInput
                             value={userName}
                             onChangeText={(userName) => setUserName(userName)}
                             placeholder='Your Name'
                             style={styles.input}
-
                         />
 
                         <TextInput
@@ -156,14 +196,12 @@ const RegisterScreen = ({ navigation, params }) => {
                             onChangeText={(userPhone) => setUserPhone(userPhone)}
                             placeholder='Phone'
                             style={styles.input}
-
                         />
                         <TextInput
                             value={userEmail}
                             onChangeText={(userEmail) => setUserEmail(userEmail)}
                             placeholder='Email'
                             style={styles.input}
-
                         />
 
                         <TextInput
@@ -187,32 +225,7 @@ const RegisterScreen = ({ navigation, params }) => {
                             style={{ marginVertical: 20 }}
                             activeOpacity={0.6}
                             // onPress={handleLogin}
-                            onPress={() => {
-                                setLoading(true);
-                                setTimeout(() => {
-                                    if (conPassword === userPassword) {
-                                        axios.post(serverIP + "/user", {
-                                            user_name: userName,
-                                            user_email: userEmail,
-                                            user_phone: userPhone,
-                                            user_pass: userPassword
-
-                                        }).then((res) => {
-                                            console.warn(res)
-                                        }).catch((err) => {
-                                            console.warn(err)
-                                        })
-                                        setError("Account Created....")
-                                        setTimeout(() => navigation.navigate('Login', { message: 'Account Created, Login Now' }), 200)
-                                    } else {
-                                        setLoading(false);
-                                        setError("Password Mismatch")
-                                    }
-
-                                }, 400)
-
-
-                            }}
+                            onPress={!isProvider?handleRegisterUser:handleRegisterProvider}
                         >
                             {loading ? (
                                 <ActivityIndicator
@@ -228,108 +241,18 @@ const RegisterScreen = ({ navigation, params }) => {
                                 />
                             ) : (
                                 <View style={styles.loginButton}>
-                                    <Text style={{ color: 'white', fontSize: 20, fontWeight: '900' }} >Sign up</Text>
+                                    <Text style={{ color: 'white', fontSize: 20, fontWeight: '900' }} >
+                                        {
+                                            isProvider?"Provider Signup":"Signup"
+                                        }
+                                    </Text>
                                 </View>
                             )
                             }
                         </TouchableOpacity>
                     </View>
-                }
-                {
-                    isProvider &&
-                    <View style={styles.inputContainer}>
-                        <TextInput
-                            value={userName}
-                            onChangeText={(userName) => setUserName(userName)}
-                            placeholder='Your Name'
-                            style={styles.input}
-
-                        />
-                        <TextInput
-                            value={userPhone}
-                            onChangeText={(userPhone) => setUserPhone(userPhone)}
-                            placeholder='Phone'
-                            style={styles.input}
-
-                        />
-                        <TextInput
-                            value={userEmail}
-                            onChangeText={(userEmail) => setUserEmail(userEmail)}
-                            placeholder='Email'
-                            style={styles.input}
-
-                        />
-
-                        <TextInput
-                            value={userPassword}
-                            onChangeText={(userPassword) => setUserPassword(userPassword)}
-                            placeholder='Password'
-                            style={styles.input}
-
-                            secureTextEntry
-                        />
-
-                        <TextInput
-                            value={conPassword}
-                            onChangeText={(pass2) => setconPassword(pass2)}
-                            placeholder='Confirm Password'
-                            style={styles.input}
-
-                            secureTextEntry
-                        />
-
-                        <TouchableOpacity
-                            style={{ marginVertical: 20 }}
-                            activeOpacity={0.6}
-                            // onPress={handleLogin}
-                            onPress={() => {
-                                setLoading(true);
-                                setTimeout(() => {
-                                    if (conPassword === userPassword) {
-                                        axios.post(serverIP + "/service-provider", {
-                                            ServiceProvideName: userName,
-                                            ServiceProviderEmail: userEmail,
-                                            ServiceProviderPhone: userPhone,
-                                            ServiceProviderPassword: userPassword
-
-                                        }).then((res) => {
-                                            console.warn("Service Provider Crearted")
-                                        }).catch((err) => {
-                                            console.warn(err)
-                                        })
-                                        setError("Account Created....")
-                                        setTimeout(() => navigation.navigate('Login', { message: 'Account Created, Login Now' }), 200)
-                                    } else {
-                                        setLoading(false);
-                                        setError("Password Mismatch")
-                                    }
-
-                                }, 400)
-
-
-                            }}
-                        >
-                            {loading ? (
-                                <ActivityIndicator
-                                    //visibility of Overlay Loading Spinner
-                                    visible={loading}
-                                    color={'white'}
-                                    size="large"
-                                    style={{ width: 200, backgroundColor: 'rgb(246,180,100)', padding: 12, borderRadius: 10 }}
-                                    //Text with the Spinner
-                                    textContent={'Loading...'}
-                                    //Text style of the Spinner Text
-                                    textStyle={styles.spinnerTextStyle}
-                                />
-                            ) : (
-                                <View style={styles.loginButton}>
-                                    <Text style={{ color: 'white', fontSize: 18, fontWeight: '900' }} >Sign up as Provider</Text>
-                                </View>
-                            )
-                            }
-                        </TouchableOpacity>
-                    </View>
-                }
+                
+                
 
 
                 <View style={{ marginTop: 50, padding: 5, alignSelf: 'center' }}>
@@ -346,8 +269,9 @@ const RegisterScreen = ({ navigation, params }) => {
                     <Text style={{}}>Already Registered?</Text>
                     <Text style={{ color: 'blue' }} > Sign In Here...</Text>
                 </TouchableOpacity>
+                
             </View >
-        </KeyboardAvoidingView>
+        </ScrollView>
     )
 }
 

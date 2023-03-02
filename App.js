@@ -11,6 +11,7 @@ import { Provider, useDispatch, useSelector } from 'react-redux';
 import { store } from './Redux/store';
 import { Ionicons } from '@expo/vector-icons';
 import { updateInfo } from './Redux/actions';
+import ServiceProviderShowcase from './Screens/ServiceProviderShowcase';
 const Stack = createNativeStackNavigator();
 
 function App() {
@@ -19,7 +20,15 @@ function App() {
     const info = useSelector(state => state.info)
     const dispatch = useDispatch()
     const msg = info.msg || " No "
-    
+    if(info.show){
+      setTimeout(() => {
+        let data = {
+          msg: "No new MSG",
+          show: false,
+        }
+        dispatch(updateInfo(data))
+      }, 5000);
+    }
     return (
       <NavigationContainer>
         <View style={{ display: info.show ? 'flex' : 'none', flexDirection: 'row', justifyContent: 'space-between', paddingHorizontal: 20,paddingVertical:10, backgroundColor: info.infoType=="Success"?'green':'rgb(200,0,0)' }}>
@@ -55,6 +64,7 @@ function App() {
           <Stack.Screen name='Register' options={{ headerShown: false, title: 'Regiter ', }} component={RegisterScreen} />
           <Stack.Screen name="Home" options={{ headerShown: false, }} component={HomeScreen} />
           <Stack.Screen name='Service' component={ServiceScreen} />
+          <Stack.Screen name='ProviderShowCase' component={ServiceProviderShowcase}/>
         </Stack.Navigator>
       </NavigationContainer>
     )

@@ -1,20 +1,16 @@
-import { StyleSheet, Button, Image, Text, View, TouchableOpacity, } from 'react-native'
-import React, { useEffect } from 'react'
+import { StyleSheet, Image, Text, View, TouchableOpacity, ScrollView, Pressable, } from 'react-native'
+import React from 'react'
 
 import { useNavigation } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import IonIcon from 'react-native-vector-icons/Ionicons';
-import { useState } from 'react'
-import axios from 'axios';
-import { serverIP } from '../Constants/IPofBackned';
+import Ionicons from '@expo/vector-icons/Ionicons';
 import { useDispatch, useSelector } from 'react-redux';
 import { userLogout } from '../Redux/actions';
 const styles = StyleSheet.create({
     profileTab: {
         flex: 1,
-        alignItems: "center",
-        padding: 20,
-        paddingTop: 40
+        backgroundColor:'white'
+
     },
     userdetails: {
         paddingTop: 20,
@@ -40,58 +36,54 @@ const styles = StyleSheet.create({
 
 const Proflletab = () => {
     const navigation = useNavigation();
-    const default_profile = "https://i.stack.imgur.com/34AD2.jpg"
+    const default_profile = "https://cdn.pixabay.com/photo/2016/08/08/09/17/avatar-1577909_960_720.png"
     const dispatch = useDispatch();
-    const user  = useSelector(state=>state.userData)
+    const user = useSelector(state => state.userData)
 
-    const userLogoutConstant = ()=>{
+    const userLogoutConstant = () => {
         dispatch(userLogout())
         AsyncStorage.removeItem('@userData');
         navigation.replace('Login')
-    }  
+    }
     return (
-        <View style={styles.profileTab}>
-            {user?
-                (
-                    <View style={styles.userdetails} >
+        <View style={{flex:1}}>
+            <ScrollView  style={{flex:1,backgroundColor:'red'}}  >
 
-                        <Image
-                            source={{ uri: user.user_image_url ? user.user_image_url : default_profile }}
-                            style={{ width: 100, height: 100, borderRadius: 50 }}
-                        />
-                        <Text>{user.user_name}</Text>
-                        <Text>{user.user_phone}</Text>
-                        <Text>{user.user_email}</Text>
-                        <TouchableOpacity activeOpacity={0.6} style={styles.userAction}>
+                <TouchableOpacity style={{ backgroundColor: 'red', borderColor: 'white', borderWidth: 1, flexDirection: 'row', width: "50%", padding: 10, borderRadius: 10, justifyContent: 'space-between', paddingHorizontal: 20, alignItems: 'center',alignSelf:'flex-end',margin:20,elevation:8 }} activeOpacity={0.6} onPress={userLogoutConstant}  >
 
-                            <Text style={{ color: 'white', fontWeight: '600', fontSize: 18 }}>Conversations</Text>
-                            <Text style={{ color: 'white', fontWeight: '600', fontSize: 18, }}>{">"}</Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity activeOpacity={0.6} style={styles.userAction}>
+                    <Text style={{ color: 'white', fontSize: 20, fontWeight: '500' }}>Logout</Text>
+                    <Ionicons name='exit' size={30} color="white"/>
+                </TouchableOpacity>
+                <Image
+                    source={{ uri: user.user_image_url ? user.user_image_url : default_profile }}
+                    style={{ width: 100, height: 100, borderRadius: 50 }}
+                />
+                <Text>{user.user_name}</Text>
+                <Text>{user.user_phone}</Text>
+                <Text>{user.user_email}</Text>
+                <Pressable style={styles.userAction}>
+                    <Text style={{ color: 'white', fontWeight: '600', fontSize: 18 }}>Conversations</Text>
+                    <Ionicons name='arrow-forward' size={20} color='white'/>
+                </Pressable>
 
-                            <Text style={{ color: 'white', fontWeight: '600', fontSize: 18 }}>Help</Text>
-                            <Text style={{ color: 'white', fontWeight: '600', fontSize: 18, }}>{">"}</Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity activeOpacity={0.6} style={styles.userAction}>
+                <Pressable style={styles.userAction}>
 
-                            <Text style={{ color: 'white', fontWeight: '600', fontSize: 18 }}>Invite</Text>
-                            <Text style={{ color: 'white', fontWeight: '600', fontSize: 18, }}>{">"}</Text>
-                        </TouchableOpacity>
+                    <Text style={{ color: 'white', fontWeight: '600', fontSize: 18 }}>Help</Text>
+                    <Ionicons name='arrow-forward' size={20} color='white'/>
+                </Pressable>
+                <Pressable style={styles.userAction}>
 
-                        <TouchableOpacity style={{ backgroundColor: 'gray', flexDirection: 'row', width: "80%", padding: 10, borderRadius: 10, justifyContent: 'space-between', paddingHorizontal: 20, alignItems: 'center', position: 'absolute', bottom: 0 }} activeOpacity={0.6} onPress={userLogoutConstant}  >
+                    <Text style={{ color: 'white', fontWeight: '600', fontSize: 18 }}>Invite</Text>
+                    <Ionicons name='arrow-forward' size={20} color='white'/>
+                </Pressable>
+                
 
-                            <Text style={{ color: 'white', fontSize: 20, fontWeight: '500' }}>Logout</Text>
-                            <IonIcon name='exit' size={30} color={'white'} />
-                        </TouchableOpacity>
-                    </View>
 
-                )
-                :
-                <View>
-                    <Text>Something went wrong</Text>
-                </View>
-            }
 
+
+
+            </ScrollView>
+       
 
 
         </View>
