@@ -1,11 +1,11 @@
-import { Button, KeyboardAvoidingView, Dimensions, Platform, Pressable, StyleSheet, Text, TextInput, TouchableOpacity, View, ActivityIndicator } from 'react-native'
-import React, { useEffect } from 'react'
+import { Button, KeyboardAvoidingView, Dimensions, Platform, Pressable, StyleSheet, Text, TextInput, TouchableOpacity, View, ActivityIndicator, StatusBar } from 'react-native'
+import React, { useEffect, useRef } from 'react'
 import { useState } from 'react'
 import axios from 'axios'
 import { serverIP } from '../Constants/IPofBackned'
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useDispatch, useSelector } from 'react-redux'
-import { userLogin } from '../Redux/actions'
+import { updateInfo, userLogin } from '../Redux/actions'
 
 const styles = StyleSheet.create({
     main: {
@@ -41,6 +41,9 @@ const styles = StyleSheet.create({
         backgroundColor: 'rgba(200,238,242,1)',
         justifyContent: 'center',
         alignItems: 'center',
+        elevation:8,
+        borderColor:'white',
+        borderWidth:2
     },
     input: {
         marginBottom: 10,
@@ -93,33 +96,20 @@ const styles = StyleSheet.create({
     }
 })
 const LoginScreen = ({ navigation, route }) => {
-   const dispatch = useDispatch();
+    const dispatch = useDispatch();
     const [userPhone, setUserPhone] = useState('');
     const [userPassword, setUserPassword] = useState('')
     const [error, setError] = useState(route.params ? route.params.message : "Login Please...")
-    const [loading, setLoading] = useState(false)
-
-    const storeData = async (data) => {
+    const [loaded, setLoaded] = useState(true)
+    const phoneref = useRef()
+    const passref = useRef()
+    const storeData =  (data) => {
         try {
-            await AsyncStorage.setItem('@userData', JSON.stringify(data))
+             AsyncStorage.setItem('@userData', JSON.stringify(data))
         } catch (e) {
             // saving error
         }
     }
-
-    // const getData = async () => {
-    //     try {
-    //         const value = await AsyncStorage.getItem('@user_phone')
-    //         if (value !== null) {
-    //             // value previously stored
-    //             setUserPhone(value);
-
-    //         }
-    //     } catch (e) {
-    //         // error reading value
-    //     }
-    // }
-    
     useEffect(() => {
         (async () => {
             let value = await AsyncStorage.getItem('@userData')
@@ -127,16 +117,57 @@ const LoginScreen = ({ navigation, route }) => {
                 const userData = JSON.parse(value);
                 dispatch(userLogin(userData));
                 navigation.replace('Home')
-             
+
 
             }
         })()
     }, []);
 
+    const validateInpute = ()=>{
+        if(userPhone.length<10 || userPhone.length>10 ){
+            phoneref.current.focus()
+            return false;
+        }else if(userPassword.length<4){
+            
+            passref.current.focus()
+            return false;
+        }
+         return true;
+    }
+    const loginHandler = () => {
+        setLoaded(false)
+        if(!validateInpute()) {
+            dispatch(updateInfo({ msg: "All inputs are Required", show: true, infoType: "Error" }));
+            setLoaded(true)
+            return ;
+        };      
+    axios.post(serverIP + '/login', { user_phone: userPhone, user_pass: userPassword })
+        .then(res => {
+            if (res.data.msg === 'Login Success') {
+                storeData(res.data);
+                dispatch(userLogin(res.data))
+                setLoaded(true)
+                dispatch(updateInfo({ msg: "Login Success", show: true, infoType: "Success" }));
+                navigation.replace('Home')
+            }
+            else {
+                setError(res.data.msg)
+                setLoaded(true)
+                dispatch(updateInfo({ msg: res.data.msg, show: true, infoType: "Error" }));
 
+            }
+        }).catch(err => {
+            console.log(err)
+            setLoaded(true)
+            dispatch(updateInfo({ msg: err.toString(), show: true, infoType: "Error" }));
+        })
+
+
+    }
 
     return (
         <View style={styles.main}>
+            <StatusBar barStyle={'default'}/>
             <View style={styles.AppNameContainer} >
                 <Text style={styles.AppName} >HelpMeet</Text>
             </View>
@@ -155,13 +186,18 @@ const LoginScreen = ({ navigation, route }) => {
                         onChangeText={(userPhone) => setUserPhone(userPhone)}
                         placeholder='Phone Number'
                         style={styles.input}
+                        cursorColor={'black'}
+                        ref = {phoneref}
+                        onSubmitEditing = {()=>passref.current.focus()}
                     />
                     <TextInput
                         value={userPassword}
                         onChangeText={(userPassword) => setUserPassword(userPassword)}
                         placeholder='Password'
                         style={styles.input}
-
+                        cursorColor={'black'}
+                        ref={passref}
+                        onSubmitEditing = {loginHandler}
                         secureTextEntry
                     />
                     <Pressable
@@ -173,40 +209,16 @@ const LoginScreen = ({ navigation, route }) => {
                         style={{ marginVertical: 20 }}
                         activeOpacity={0.6}
                         // onPress={handleLogin}
-                        onPress={() => {
-                            setLoading(true);
-                            axios.post(serverIP + '/login', { user_phone: userPhone, user_pass: userPassword }).then(res => {
-                               
-                                if (res.data.msg === 'Login Success') {
-                                    storeData(res.data);
-                                    dispatch(userLogin(res.data))
-                                    navigation.replace('Home')
-                                }
-                                else {
-                                    setError(res.data.msg)
-                                }
-
-                                setLoading(false)
-                            }).catch(err => {
-                                console.log(serverIP + '/login');
-                               
-                                setError(err);
-                                setLoading(false)
-                            })
-
-
-                        }}
+                        onPress={loginHandler}
                     >
-                        {loading ? (
+                        {!loaded ? (
                             <ActivityIndicator
                                 //visibility of Overlay Loading Spinner
-                                visible={loading}
+                                visible={loaded}
                                 color={'white'}
                                 size="large"
                                 style={{ width: 200, backgroundColor: 'rgb(246,180,100)', padding: 12, borderRadius: 10 }}
-                                //Text with the Spinner
                                 textContent={'Loading...'}
-                                //Text style of the Spinner Text
                                 textStyle={styles.spinnerTextStyle}
                             />
                         ) : (

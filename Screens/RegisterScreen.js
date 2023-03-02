@@ -43,7 +43,9 @@ const styles = StyleSheet.create({
     inputContainer: {
         width: '100%',
         alignSelf: 'center',
-
+        elevation:8,
+        borderColor:'white',
+        borderWidth:2,
         margin: 10,
         paddingHorizontal: 10,
         paddingTop: 30,
@@ -120,243 +122,231 @@ const RegisterScreen = ({ navigation, params }) => {
     const [userPhone, setUserPhone] = useState('');
     const [isProvider, setIsProvider] = useState(false)
 
-    const countries = [
-        "india", "nepal", "bhutan"
-    ]
-    useEffect(() => {
-
-
-    }, [])
-    console.log(isProvider)
     return (
-<KeyboardAvoidingView style={styles.main} behavior='position'>
-
-
-        <View >
-            <View style={styles.AppNameContainer} >
-                <Text style={styles.AppName} >HelpMeet</Text>
-            </View>
-
-
-            <View style={{ flexDirection: 'row', width: '100%', backgroundColor: 'rgba(200,238,242,1)', justifyContent: 'space-evenly', padding: 10, marginVertical: 10, borderRadius: 20 }}>
-                <TouchableOpacity onPress={() => setIsProvider(false)}>
-                    <View style={{ padding: 10, borderRadius: 10, backgroundColor: !isProvider ? '#0e5beb' : 'rgba(255,255,255,0.7)', paddingHorizontal: 20 }} >
-                        <Text style={{ color: isProvider ? 'rgb(0,0,0)' : 'white' }}>Normal user</Text>
-                    </View>
-                </TouchableOpacity>
-                <TouchableOpacity onPress={() => setIsProvider(true)}>
-                    <View style={{ padding: 10, borderRadius: 10, backgroundColor: !isProvider ? 'rgba(255,255,255,0.7)' : '#0e5beb', paddingHorizontal: 20 }}>
-                        <Text style={{ color: isProvider ? 'white' : 'rgb(0,0,0)' }}>Service Provider </Text>
-                    </View>
-                </TouchableOpacity>
-            </View>
-            {
-                !isProvider &&
-                <View style={styles.inputContainer}>
-                    <TextInput
-                        value={userName}
-                        onChangeText={(userName) => setUserName(userName)}
-                        placeholder='Your Name'
-                        style={styles.input}
-
-                    />
-                    
-                    <TextInput
-                        value={userPhone}
-                        onChangeText={(userPhone) => setUserPhone(userPhone)}
-                        placeholder='Phone'
-                        style={styles.input}
-
-                    />
-                    <TextInput
-                        value={userEmail}
-                        onChangeText={(userEmail) => setUserEmail(userEmail)}
-                        placeholder='Email'
-                        style={styles.input}
-
-                    />
-                    
-                    <TextInput
-                        value={userPassword}
-                        onChangeText={(userPassword) => setUserPassword(userPassword)}
-                        placeholder='Password'
-                        style={styles.input}
-
-                        secureTextEntry
-                    />
-
-                    <TextInput
-                        value={conPassword}
-                        onChangeText={(pass2) => setconPassword(pass2)}
-                        placeholder='Confirm Password'
-                        style={styles.input}
-
-                        secureTextEntry
-                    />
-                    <TouchableOpacity
-                        style={{ marginVertical: 20 }}
-                        activeOpacity={0.6}
-                        // onPress={handleLogin}
-                        onPress={() => {
-                            setLoading(true);
-                            setTimeout(() => {
-                                if (conPassword === userPassword) {
-                                    axios.post(serverIP+"/user", {
-                                        user_name: userName,
-                                        user_email: userEmail,
-                                        user_phone: userPhone,
-                                        user_pass: userPassword
-
-                                    }).then((res) => {
-                                        console.warn(res)
-                                    }).catch((err) => {
-                                        console.warn(err)
-                                    })
-                                    setError("Account Created....")
-                                    setTimeout(() => navigation.navigate('Login', { message: 'Account Created, Login Now' }), 200)
-                                } else {
-                                    setLoading(false);
-                                    setError("Password Mismatch")
-                                }
-
-                            }, 400)
-
-
-                        }}
-                    >
-                        {loading ? (
-                            <ActivityIndicator
-                                //visibility of Overlay Loading Spinner
-                                visible={loading}
-                                color={'white'}
-                                size="large"
-                                style={{ width: 200, backgroundColor: 'rgb(246,180,100)', padding: 12, borderRadius: 10 }}
-                                //Text with the Spinner
-                                textContent={'Loading...'}
-                                //Text style of the Spinner Text
-                                textStyle={styles.spinnerTextStyle}
-                            />
-                        ) : (
-                            <View style={styles.loginButton}>
-                                <Text style={{ color: 'white', fontSize: 20, fontWeight: '900' }} >Sign up</Text>
-                            </View>
-                        )
-                        }
+        <KeyboardAvoidingView style={styles.main} behavior='position'>
+            <View >
+                <View style={styles.AppNameContainer} >
+                    <Text style={styles.AppName} >HelpMeet</Text>
+                </View>
+                <View style={{ flexDirection: 'row', width: '100%', backgroundColor: 'rgba(200,238,242,1)', justifyContent: 'space-evenly', padding: 10, marginVertical: 10, borderRadius: 20 }}>
+                    <TouchableOpacity onPress={() => setIsProvider(false)}>
+                        <View style={{ padding: 10, borderRadius: 10, backgroundColor: !isProvider ? '#0e5beb' : 'rgba(255,255,255,0.7)', paddingHorizontal: 20 }} >
+                            <Text style={{ color: isProvider ? 'rgb(0,0,0)' : 'white' }}>Normal user</Text>
+                        </View>
+                    </TouchableOpacity>
+                    <TouchableOpacity onPress={() => setIsProvider(true)}>
+                        <View style={{ padding: 10, borderRadius: 10, backgroundColor: !isProvider ? 'rgba(255,255,255,0.7)' : '#0e5beb', paddingHorizontal: 20 }}>
+                            <Text style={{ color: isProvider ? 'white' : 'rgb(0,0,0)' }}>Service Provider </Text>
+                        </View>
                     </TouchableOpacity>
                 </View>
-            }
-            {
-                isProvider &&
-                <View style={styles.inputContainer}>
-                    <TextInput
-                        value={userName}
-                        onChangeText={(userName) => setUserName(userName)}
-                        placeholder='Your Name'
-                        style={styles.input}
+                {
+                    !isProvider &&
+                    <View style={styles.inputContainer}>
+                        <TextInput
+                            value={userName}
+                            onChangeText={(userName) => setUserName(userName)}
+                            placeholder='Your Name'
+                            style={styles.input}
 
-                    />
-                    <TextInput
-                        value={userPhone}
-                        onChangeText={(userPhone) => setUserPhone(userPhone)}
-                        placeholder='Phone'
-                        style={styles.input}
+                        />
 
-                    />
-                    <TextInput
-                        value={userEmail}
-                        onChangeText={(userEmail) => setUserEmail(userEmail)}
-                        placeholder='Email'
-                        style={styles.input}
+                        <TextInput
+                            value={userPhone}
+                            onChangeText={(userPhone) => setUserPhone(userPhone)}
+                            placeholder='Phone'
+                            style={styles.input}
 
-                    />
+                        />
+                        <TextInput
+                            value={userEmail}
+                            onChangeText={(userEmail) => setUserEmail(userEmail)}
+                            placeholder='Email'
+                            style={styles.input}
 
-                    <TextInput
-                        value={userPassword}
-                        onChangeText={(userPassword) => setUserPassword(userPassword)}
-                        placeholder='Password'
-                        style={styles.input}
+                        />
 
-                        secureTextEntry
-                    />
+                        <TextInput
+                            value={userPassword}
+                            onChangeText={(userPassword) => setUserPassword(userPassword)}
+                            placeholder='Password'
+                            style={styles.input}
 
-                    <TextInput
-                        value={conPassword}
-                        onChangeText={(pass2) => setconPassword(pass2)}
-                        placeholder='Confirm Password'
-                        style={styles.input}
+                            secureTextEntry
+                        />
 
-                        secureTextEntry
-                    />
+                        <TextInput
+                            value={conPassword}
+                            onChangeText={(pass2) => setconPassword(pass2)}
+                            placeholder='Confirm Password'
+                            style={styles.input}
 
-                    <TouchableOpacity
-                        style={{ marginVertical: 20 }}
-                        activeOpacity={0.6}
-                        // onPress={handleLogin}
-                        onPress={() => {
-                            setLoading(true);
-                            setTimeout(() => {
-                                if (conPassword === userPassword) {
-                                    axios.post(serverIP+"/service-provider", {
-                                        ServiceProvideName: userName,
-                                        ServiceProviderEmail: userEmail,
-                                        ServiceProviderPhone: userPhone,
-                                        ServiceProviderPassword: userPassword
+                            secureTextEntry
+                        />
+                        <TouchableOpacity
+                            style={{ marginVertical: 20 }}
+                            activeOpacity={0.6}
+                            // onPress={handleLogin}
+                            onPress={() => {
+                                setLoading(true);
+                                setTimeout(() => {
+                                    if (conPassword === userPassword) {
+                                        axios.post(serverIP + "/user", {
+                                            user_name: userName,
+                                            user_email: userEmail,
+                                            user_phone: userPhone,
+                                            user_pass: userPassword
 
-                                    }).then((res) => {
-                                        console.warn("Service Provider Crearted")
-                                    }).catch((err) => {
-                                        console.warn(err)
-                                    })
-                                    setError("Account Created....")
-                                    setTimeout(() => navigation.navigate('Login', { message: 'Account Created, Login Now' }), 200)
-                                } else {
-                                    setLoading(false);
-                                    setError("Password Mismatch")
-                                }
+                                        }).then((res) => {
+                                            console.warn(res)
+                                        }).catch((err) => {
+                                            console.warn(err)
+                                        })
+                                        setError("Account Created....")
+                                        setTimeout(() => navigation.navigate('Login', { message: 'Account Created, Login Now' }), 200)
+                                    } else {
+                                        setLoading(false);
+                                        setError("Password Mismatch")
+                                    }
 
-                            }, 400)
+                                }, 400)
 
 
-                        }}
-                    >
-                        {loading ? (
-                            <ActivityIndicator
-                                //visibility of Overlay Loading Spinner
-                                visible={loading}
-                                color={'white'}
-                                size="large"
-                                style={{ width: 200, backgroundColor: 'rgb(246,180,100)', padding: 12, borderRadius: 10 }}
-                                //Text with the Spinner
-                                textContent={'Loading...'}
-                                //Text style of the Spinner Text
-                                textStyle={styles.spinnerTextStyle}
-                            />
-                        ) : (
-                            <View style={styles.loginButton}>
-                                <Text style={{ color: 'white', fontSize: 18, fontWeight: '900' }} >Sign up as Provider</Text>
-                            </View>
-                        )
-                        }
-                    </TouchableOpacity>
+                            }}
+                        >
+                            {loading ? (
+                                <ActivityIndicator
+                                    //visibility of Overlay Loading Spinner
+                                    visible={loading}
+                                    color={'white'}
+                                    size="large"
+                                    style={{ width: 200, backgroundColor: 'rgb(246,180,100)', padding: 12, borderRadius: 10 }}
+                                    //Text with the Spinner
+                                    textContent={'Loading...'}
+                                    //Text style of the Spinner Text
+                                    textStyle={styles.spinnerTextStyle}
+                                />
+                            ) : (
+                                <View style={styles.loginButton}>
+                                    <Text style={{ color: 'white', fontSize: 20, fontWeight: '900' }} >Sign up</Text>
+                                </View>
+                            )
+                            }
+                        </TouchableOpacity>
+                    </View>
+                }
+                {
+                    isProvider &&
+                    <View style={styles.inputContainer}>
+                        <TextInput
+                            value={userName}
+                            onChangeText={(userName) => setUserName(userName)}
+                            placeholder='Your Name'
+                            style={styles.input}
+
+                        />
+                        <TextInput
+                            value={userPhone}
+                            onChangeText={(userPhone) => setUserPhone(userPhone)}
+                            placeholder='Phone'
+                            style={styles.input}
+
+                        />
+                        <TextInput
+                            value={userEmail}
+                            onChangeText={(userEmail) => setUserEmail(userEmail)}
+                            placeholder='Email'
+                            style={styles.input}
+
+                        />
+
+                        <TextInput
+                            value={userPassword}
+                            onChangeText={(userPassword) => setUserPassword(userPassword)}
+                            placeholder='Password'
+                            style={styles.input}
+
+                            secureTextEntry
+                        />
+
+                        <TextInput
+                            value={conPassword}
+                            onChangeText={(pass2) => setconPassword(pass2)}
+                            placeholder='Confirm Password'
+                            style={styles.input}
+
+                            secureTextEntry
+                        />
+
+                        <TouchableOpacity
+                            style={{ marginVertical: 20 }}
+                            activeOpacity={0.6}
+                            // onPress={handleLogin}
+                            onPress={() => {
+                                setLoading(true);
+                                setTimeout(() => {
+                                    if (conPassword === userPassword) {
+                                        axios.post(serverIP + "/service-provider", {
+                                            ServiceProvideName: userName,
+                                            ServiceProviderEmail: userEmail,
+                                            ServiceProviderPhone: userPhone,
+                                            ServiceProviderPassword: userPassword
+
+                                        }).then((res) => {
+                                            console.warn("Service Provider Crearted")
+                                        }).catch((err) => {
+                                            console.warn(err)
+                                        })
+                                        setError("Account Created....")
+                                        setTimeout(() => navigation.navigate('Login', { message: 'Account Created, Login Now' }), 200)
+                                    } else {
+                                        setLoading(false);
+                                        setError("Password Mismatch")
+                                    }
+
+                                }, 400)
+
+
+                            }}
+                        >
+                            {loading ? (
+                                <ActivityIndicator
+                                    //visibility of Overlay Loading Spinner
+                                    visible={loading}
+                                    color={'white'}
+                                    size="large"
+                                    style={{ width: 200, backgroundColor: 'rgb(246,180,100)', padding: 12, borderRadius: 10 }}
+                                    //Text with the Spinner
+                                    textContent={'Loading...'}
+                                    //Text style of the Spinner Text
+                                    textStyle={styles.spinnerTextStyle}
+                                />
+                            ) : (
+                                <View style={styles.loginButton}>
+                                    <Text style={{ color: 'white', fontSize: 18, fontWeight: '900' }} >Sign up as Provider</Text>
+                                </View>
+                            )
+                            }
+                        </TouchableOpacity>
+                    </View>
+                }
+
+
+                <View style={{ marginTop: 50, padding: 5, alignSelf: 'center' }}>
+                    <Text>----------- or continue with -----------</Text>
+                    <View>
+
+                    </View>
                 </View>
-            }
-
-
-            <View style={{ marginTop: 50, padding: 5, alignSelf: 'center' }}>
-                <Text>----------- or continue with -----------</Text>
-                <View>
-
-                </View>
-            </View>
-            <TouchableOpacity activeOpacity={0.5} onPress={() => {
-                navigation.navigate('Login')
-            }}
-                style={{ flexDirection: 'row', alignSelf: 'center', }}
-            >
-                <Text style={{}}>Already Registered?</Text>
-                <Text style={{ color: 'blue' }} > Sign In Here...</Text>
-            </TouchableOpacity>
-        </View >
+                <TouchableOpacity activeOpacity={0.5} onPress={() => {
+                    navigation.navigate('Login')
+                }}
+                    style={{ flexDirection: 'row', alignSelf: 'center', }}
+                >
+                    <Text style={{}}>Already Registered?</Text>
+                    <Text style={{ color: 'blue' }} > Sign In Here...</Text>
+                </TouchableOpacity>
+            </View >
         </KeyboardAvoidingView>
     )
 }

@@ -25,8 +25,8 @@ const ServiceProviderDashBord = () => {
   return (
     <View style={{ paddingHorizontal: 10, paddingTop: 10, backgroundColor: 'white', flex: 1 }}>
       <StatusBar barStyle={'default'} backgroundColor={'rgb(80,80,255)'} />
-      <View style={{ height: profileOpen ? '100%' : 60 }}>
-        <View style={{ flex: profileOpen ? 1 : 0, padding: 5, backgroundColor: "white", borderRadius: 10, elevation: 5 }}>
+      <View style={{ height: profileOpen ? '100%' : 60,position:'absolute',alignSelf:'center',zIndex:10,elevation:8,borderRadius:20 ,backgroundColor: "rgba(255,255,255,0.9)"}}>
+        <View style={{ flex: profileOpen ? 1 : 0, padding: 5, borderRadius: 10 }}>
           <View style={{ flexDirection: 'row', justifyContent: 'space-around', alignItems: 'center', width: '100%' }} >
             <Ionicons name={profileOpen ? 'arrow-back-sharp' : 'md-code-download'} size={32} color={'black'} onPress={() => setprofileOpen(!profileOpen)} />
             <Text style={{ color: 'rgb(255,0,25)', fontSize: 18, fontWeight: 'bold' }}>Welcome {userData.ServiceProvideName}</Text>
@@ -38,18 +38,19 @@ const ServiceProviderDashBord = () => {
           </View>
           {
             profileOpen &&
-            <View>
-              <Text>Name :{userData.ServiceProvideName} </Text>
-              <Text>Phone :{userData.ServiceProviderPhone}</Text>
-              <Text>Email :{userData.ServiceProviderEmail} </Text>
-              <View>
-                <Button title='Logout' onPress={userLogoutConstant} />
-              </View>
+            <View style={{justifyContent:'center',alignItems:'center',}} >
+              <Text>{userData.ServiceProvideName} </Text>
+              <Text>{userData.ServiceProviderPhone}</Text>
+              <Text>{userData.ServiceProviderEmail} </Text>
+              <Pressable style={{backgroundColor:'red',padding:10,borderRadius:10,flexDirection:'row',justifyContent:'space-evenly',width:150,alignItems:'center',elevation:8,borderWidth:2,borderColor:'white'}} onPress={userLogoutConstant}>
+                <Text style={{color:'white',fontSize:18}}>Logout</Text>
+                <Ionicons name='log-out' size={30} color ={'white'}/>
+              </Pressable>
             </View>
           }
         </View>
       </View>
-      <ScrollView style={{ height: '100%' }}>
+      <ScrollView style={{ height: '100%',marginTop:60 }}>
         
         <View style={{ margin: 10, backgroundColor: "white", borderRadius: 10, elevation: 5 }}>
           <Text>Service</Text>
@@ -76,5 +77,3 @@ const ServiceProviderDashBord = () => {
 }
 
 export default ServiceProviderDashBord
-
-const styles = StyleSheet.create({})

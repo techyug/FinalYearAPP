@@ -1,4 +1,4 @@
-import { ADDITION, MESSAGE_UPDATE, ONLINE_USERLIST_CHANGED, USER_LOGIN, USER_LOGOUT } from "./actionType";
+import { ADDITION, MESSAGE_UPDATE, ONLINE_USERLIST_CHANGED, UPDATE_INFO, USER_LOGIN, USER_LOGOUT } from "./actionType";
 import { SUBSTACTION } from "./actionType";
 export function addition() {
     return {
@@ -29,5 +29,11 @@ export function updateMessages(message){
     return {
         type:MESSAGE_UPDATE,
         newMessage:message,
+    }
+}
+export function updateInfo(infoData){
+    return {
+        type:UPDATE_INFO,
+        newinfoData:infoData
     }
 }
