@@ -1,8 +1,11 @@
 import { KeyboardAvoidingView, Dimensions, Platform, Pressable, StyleSheet, Text, TextInput, TouchableOpacity, View, ActivityIndicator, Keyboard, ScrollView } from 'react-native'
-import React, { useEffect } from 'react'
+import React, { useEffect, useRef } from 'react'
 import { useState } from 'react'
 import axios from 'axios'
 import { serverIP } from '../Constants/IPofBackned'
+import { Ionicons } from '@expo/vector-icons'
+import { useDispatch } from 'react-redux'
+import { updateInfo } from '../Redux/actions'
 
 const styles = StyleSheet.create({
     main: {
@@ -51,10 +54,7 @@ const styles = StyleSheet.create({
         paddingTop: 30,
         borderRadius: 10,
         backgroundColor: 'rgba(200,238,242,1)',
-        justifyContent: 'center',
         alignItems: 'center',
-
-
     },
     input: {
         marginBottom: 10,
@@ -112,6 +112,7 @@ const styles = StyleSheet.create({
     }
 })
 const RegisterScreen = ({ navigation, params }) => {
+    const dispatch = useDispatch();
 
     const [error, setError] = useState('')
     const [userEmail, setUserEmail] = useState('');
@@ -121,47 +122,112 @@ const RegisterScreen = ({ navigation, params }) => {
     const [userName, setUserName] = useState('');
     const [userPhone, setUserPhone] = useState('');
     const [isProvider, setIsProvider] = useState(false)
+    const usernameref = useRef()
+    const phoneref = useRef();
+    const passref = useRef();
+    const conPassref = useRef();
+    const emailref = useRef();
+
+    const isValidForm = () => {
+        let reg = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w\w+)+$/;
+        if (reg.test(userEmail) === false) {
+            dispatch(updateInfo({ msg: "Email seems to be invalid", show: true, infoType: "Error" }));
+            return false;
+        }
+        if (userPhone.length < 10 || userPhone.length > 10) {
+            dispatch(updateInfo({ msg: "Invalid Phone, enter again...", show: true, infoType: "Error" }));
+            phoneref.current.focus();
+            return false;
+        } 
+        if (userName.length < 3) {
+            dispatch(updateInfo({ msg: "Name Too short", show: true, infoType: "Error" }));
+            return false;
+        }
+        if(userPassword.length<5){
+            dispatch(updateInfo({ msg: "Password should contain more than 5 charecters", show: true, infoType: "Error" }));
+            return false;
+        }
+        if(conPassword!==userPassword ){
+            dispatch(updateInfo({ msg: "Password Does Not match", show: true, infoType: "Error" }));
+            return false;
+        }
+        return true
+    }
     const handleRegisterUser = () => {
         setLoading(true);
+        if(!isValidForm()){
+            setLoading(false)
+            return
+           
+        }
+
         if (conPassword === userPassword) {
-            axios.post(serverIP + "/user", {
+            axios.post(serverIP + "/users", {
                 user_name: userName,
                 user_email: userEmail,
                 user_phone: userPhone,
                 user_pass: userPassword
 
             }).then((res) => {
-                console.warn(res)
+               
+                let re = res.data.toString();
+                if (re.includes("Duplicate")) {
+                    dispatch(updateInfo({ msg: re, show: true, infoType: "Error" }));
+                    setLoading(false);
+                    setError(res.data)
+                } 
+                if(res.data.affectedRows==1) {
+                    dispatch(updateInfo({ msg: "Account created...", show: true, infoType: "Success" }));
+                    setLoading(false);
+                    navigation.navigate('Login', { message: 'Account Created, Login Now' })
+                }
             }).catch((err) => {
-                console.warn(err)
+                setLoading(false);
+                setError(err.toString())
+                console.log("error :", err)
             })
-            setError("Account Created....")
-            setTimeout(() => navigation.navigate('Login', { message: 'Account Created, Login Now' }), 200)
+
         } else {
+            
             setLoading(false);
             setError("Password Mismatch")
         }
     }
     const handleRegisterProvider = () => {
+       
         setLoading(true);
-            if (conPassword === userPassword) {
-                axios.post(serverIP + "/service-provider", {
-                    ServiceProvideName: userName,
-                    ServiceProviderEmail: userEmail,
-                    ServiceProviderPhone: userPhone,
-                    ServiceProviderPassword: userPassword
+        if(!isValidForm()){
+            setLoading(false)
+            return
+        }
+        if (conPassword === userPassword) {
+            axios.post(serverIP + "/service-provider", {
+                ServiceProvideName: userName,
+                ServiceProviderEmail: userEmail,
+                ServiceProviderPhone: userPhone,
+                ServiceProviderPassword: userPassword
 
-                }).then((res) => {
-                    console.warn("Service Provider Crearted")
-                }).catch((err) => {
-                    console.warn(err)
-                })
-                setError("Account Created....")
-                setTimeout(() => navigation.navigate('Login', { message: 'Account Created, Login Now' }), 200)
-            } else {
+            }).then((res) => {
+                let re = res.data.toString();
+                if (re.includes("Duplicate")) {
+                    dispatch(updateInfo({ msg: re, show: true, infoType: "Error" }));
+                    setLoading(false);
+                    setError(res.data)
+                } 
+                if(res.data.affectedRows==1) {
+                    dispatch(updateInfo({ msg: "Account created...", show: true, infoType: "Success" }));
+                    setLoading(false);
+                    navigation.navigate('Login', { message: 'Account Created, Login Now' })
+                }
+            }).catch((err) => {
+                dispatch(updateInfo({ msg: err.toString(), show: true, infoType: "Error" }));
                 setLoading(false);
-                setError("Password Mismatch")
-            }
+            })
+
+        } else {
+            setLoading(false);
+            setError("Password Mismatch")
+        }
     }
 
     return (
@@ -182,83 +248,86 @@ const RegisterScreen = ({ navigation, params }) => {
                         </View>
                     </TouchableOpacity>
                 </View>
-                
-                    <View style={styles.inputContainer}>
-                        <TextInput
-                            value={userName}
-                            onChangeText={(userName) => setUserName(userName)}
-                            placeholder='Your Name'
-                            style={styles.input}
-                        />
 
-                        <TextInput
-                            value={userPhone}
-                            onChangeText={(userPhone) => setUserPhone(userPhone)}
-                            placeholder='Phone'
-                            style={styles.input}
-                        />
-                        <TextInput
-                            value={userEmail}
-                            onChangeText={(userEmail) => setUserEmail(userEmail)}
-                            placeholder='Email'
-                            style={styles.input}
-                        />
+                <View style={styles.inputContainer}>
+                    <TextInput
+                        value={userName}
+                        onChangeText={(userName) => setUserName(userName)}
+                        placeholder='Your Name'
+                        ref={usernameref}
+                        style={styles.input}
+                    />
 
-                        <TextInput
-                            value={userPassword}
-                            onChangeText={(userPassword) => setUserPassword(userPassword)}
-                            placeholder='Password'
-                            style={styles.input}
+                    <TextInput
+                        value={userPhone}
+                        maxLength={10}
+                        onChangeText={(userPhone) => setUserPhone(userPhone)}
+                        placeholder='Phone'
+                        ref={phoneref}
+                        style={styles.input}
+                    />
+                    <TextInput
+                        value={userEmail}
+                        ref={emailref}
+                        onChangeText={(userEmail) => setUserEmail(userEmail)}
+                        placeholder='Email'
+                        style={styles.input}
+                    />
 
-                            secureTextEntry
-                        />
+                    <TextInput
+                        value={userPassword}
+                        ref={passref}
+                        onChangeText={(userPassword) => setUserPassword(userPassword)}
+                        placeholder='Password'
+                        style={styles.input}
 
-                        <TextInput
-                            value={conPassword}
-                            onChangeText={(pass2) => setconPassword(pass2)}
-                            placeholder='Confirm Password'
-                            style={styles.input}
+                        secureTextEntry
+                    />
 
-                            secureTextEntry
-                        />
-                        <TouchableOpacity
-                            style={{ marginVertical: 20 }}
-                            activeOpacity={0.6}
-                            // onPress={handleLogin}
-                            onPress={!isProvider?handleRegisterUser:handleRegisterProvider}
-                        >
-                            {loading ? (
-                                <ActivityIndicator
-                                    //visibility of Overlay Loading Spinner
-                                    visible={loading}
-                                    color={'white'}
-                                    size="large"
-                                    style={{ width: 200, backgroundColor: 'rgb(246,180,100)', padding: 12, borderRadius: 10 }}
-                                    //Text with the Spinner
-                                    textContent={'Loading...'}
-                                    //Text style of the Spinner Text
-                                    textStyle={styles.spinnerTextStyle}
-                                />
-                            ) : (
-                                <View style={styles.loginButton}>
-                                    <Text style={{ color: 'white', fontSize: 20, fontWeight: '900' }} >
-                                        {
-                                            isProvider?"Provider Signup":"Signup"
-                                        }
-                                    </Text>
-                                </View>
-                            )
-                            }
-                        </TouchableOpacity>
-                    </View>
-                
-                
+                    <TextInput
+                        value={conPassword}
+                        ref={conPassref}
+                        onChangeText={(pass2) => setconPassword(pass2)}
+                        placeholder='Confirm Password'
+                        style={styles.input}
 
-
-                <View style={{ marginTop: 50, padding: 5, alignSelf: 'center' }}>
+                        secureTextEntry
+                    />
+                    <TouchableOpacity
+                        style={{ marginVertical: 20 }}
+                        activeOpacity={0.6}
+                        // onPress={handleLogin}
+                        onPress={!isProvider ? handleRegisterUser : handleRegisterProvider}
+                    >
+                        {loading ? (
+                            <ActivityIndicator
+                                //visibility of Overlay Loading Spinner
+                                visible={loading}
+                                color={'white'}
+                                size="large"
+                                style={{ width: 200, backgroundColor: 'rgb(246,180,100)', padding: 12, borderRadius: 10 }}
+                                //Text with the Spinner
+                                textContent={'Loading...'}
+                                //Text style of the Spinner Text
+                                textStyle={styles.spinnerTextStyle}
+                            />
+                        ) : (
+                            <View style={styles.loginButton}>
+                                <Text style={{ color: 'white', fontSize: 20, fontWeight: '900' }} >
+                                    {
+                                        isProvider ? "Provider Signup" : "Signup"
+                                    }
+                                </Text>
+                            </View>
+                        )
+                        }
+                    </TouchableOpacity>
+                </View>
+                <View style={{ marginTop: 10, padding: 5, alignSelf: 'center' }}>
                     <Text>----------- or continue with -----------</Text>
-                    <View>
-
+                    <View style={{ flexDirection: 'row', justifyContent: 'space-evenly' }}>
+                        <Ionicons name='logo-google' size={30} />
+                        <Ionicons name='logo-facebook' size={30} />
                     </View>
                 </View>
                 <TouchableOpacity activeOpacity={0.5} onPress={() => {
@@ -269,7 +338,7 @@ const RegisterScreen = ({ navigation, params }) => {
                     <Text style={{}}>Already Registered?</Text>
                     <Text style={{ color: 'blue' }} > Sign In Here...</Text>
                 </TouchableOpacity>
-                
+
             </View >
         </ScrollView>
     )

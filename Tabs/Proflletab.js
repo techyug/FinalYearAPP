@@ -1,4 +1,4 @@
-import { StyleSheet, Image, Text, View, TouchableOpacity, ScrollView, Pressable, } from 'react-native'
+import { StyleSheet, Image, Text, View, TouchableOpacity, ScrollView, Pressable, Alert, } from 'react-native'
 import React from 'react'
 
 import { useNavigation } from '@react-navigation/native';
@@ -47,7 +47,7 @@ const Proflletab = () => {
     }
     return (
         <View style={{flex:1}}>
-            <ScrollView  style={{flex:1,backgroundColor:'red'}}  >
+            <ScrollView  style={{flex:1}}  contentContainerStyle={{alignItems:'center'}} >
 
                 <TouchableOpacity style={{ backgroundColor: 'red', borderColor: 'white', borderWidth: 1, flexDirection: 'row', width: "50%", padding: 10, borderRadius: 10, justifyContent: 'space-between', paddingHorizontal: 20, alignItems: 'center',alignSelf:'flex-end',margin:20,elevation:8 }} activeOpacity={0.6} onPress={userLogoutConstant}  >
 
@@ -61,31 +61,22 @@ const Proflletab = () => {
                 <Text>{user.user_name}</Text>
                 <Text>{user.user_phone}</Text>
                 <Text>{user.user_email}</Text>
-                <Pressable style={styles.userAction}>
+                <Pressable style={styles.userAction} onPress = {()=>Alert.alert("Conversations","We are working on this feature")}>
                     <Text style={{ color: 'white', fontWeight: '600', fontSize: 18 }}>Conversations</Text>
                     <Ionicons name='arrow-forward' size={20} color='white'/>
                 </Pressable>
 
-                <Pressable style={styles.userAction}>
+                <Pressable style={styles.userAction} onPress = {()=>Alert.alert("Help","We are working on this feature")}>
 
                     <Text style={{ color: 'white', fontWeight: '600', fontSize: 18 }}>Help</Text>
                     <Ionicons name='arrow-forward' size={20} color='white'/>
                 </Pressable>
-                <Pressable style={styles.userAction}>
+                <Pressable style={styles.userAction} onPress = {()=>Alert.alert("Invite","We are working on this feature")}>
 
                     <Text style={{ color: 'white', fontWeight: '600', fontSize: 18 }}>Invite</Text>
                     <Ionicons name='arrow-forward' size={20} color='white'/>
                 </Pressable>
-                
-
-
-
-
-
             </ScrollView>
-       
-
-
         </View>
     )
 }

@@ -1,4 +1,4 @@
-import { Button, KeyboardAvoidingView, Dimensions, Platform, Pressable, StyleSheet, Text, TextInput, TouchableOpacity, View, ActivityIndicator, StatusBar } from 'react-native'
+import { Button, KeyboardAvoidingView, Dimensions, Platform, Pressable, StyleSheet, Text, TextInput, TouchableOpacity, View, ActivityIndicator, StatusBar, ScrollView } from 'react-native'
 import React, { useEffect, useRef } from 'react'
 import { useState } from 'react'
 import axios from 'axios'
@@ -41,9 +41,9 @@ const styles = StyleSheet.create({
         backgroundColor: 'rgba(200,238,242,1)',
         justifyContent: 'center',
         alignItems: 'center',
-        elevation:8,
-        borderColor:'white',
-        borderWidth:2
+        elevation: 8,
+        borderColor: 'white',
+        borderWidth: 2
     },
     input: {
         marginBottom: 10,
@@ -103,9 +103,9 @@ const LoginScreen = ({ navigation, route }) => {
     const [loaded, setLoaded] = useState(true)
     const phoneref = useRef()
     const passref = useRef()
-    const storeData =  (data) => {
+    const storeData = (data) => {
         try {
-             AsyncStorage.setItem('@userData', JSON.stringify(data))
+            AsyncStorage.setItem('@userData', JSON.stringify(data))
         } catch (e) {
             // saving error
         }
@@ -123,72 +123,67 @@ const LoginScreen = ({ navigation, route }) => {
         })()
     }, []);
 
-    const validateInpute = ()=>{
-        if(userPhone.length<10 || userPhone.length>10 ){
+    const validateInpute = () => {
+        if (userPhone.length < 10 || userPhone.length > 10) {
             phoneref.current.focus()
             return false;
-        }else if(userPassword.length<4){
-            
+        } else if (userPassword.length < 4) {
             passref.current.focus()
             return false;
         }
-         return true;
+        return true;
     }
     const loginHandler = () => {
         setLoaded(false)
-        if(!validateInpute()) {
+        if (!validateInpute()) {
             dispatch(updateInfo({ msg: "All inputs are Required", show: true, infoType: "Error" }));
             setLoaded(true)
-            return ;
-        };      
-    axios.post(serverIP + '/login', { user_phone: userPhone, user_pass: userPassword })
-        .then(res => {
-            if (res.data.msg === 'Login Success') {
-                storeData(res.data);
-                dispatch(userLogin(res.data))
-                setLoaded(true)
-                dispatch(updateInfo({ msg: "Login Success", show: true, infoType: "Success" }));
-                navigation.replace('Home')
-            }
-            else {
-                setError(res.data.msg)
-                setLoaded(true)
-                dispatch(updateInfo({ msg: res.data.msg, show: true, infoType: "Error" }));
+            return;
+        };
+        axios.post(serverIP + '/login', { user_phone: userPhone, user_pass: userPassword })
+            .then(res => {
+                if (res.data.msg === 'Login Success') {
+                    storeData(res.data);
+                    dispatch(userLogin(res.data))
+                    setLoaded(true)
+                    dispatch(updateInfo({ msg: "Login Success", show: true, infoType: "Success" }));
+                    navigation.replace('Home')
+                }
+                else {
+                    setError(res.data.msg)
+                    setLoaded(true)
+                    dispatch(updateInfo({ msg: res.data.msg, show: true, infoType: "Error" }));
 
-            }
-        }).catch(err => {
-            console.log(err)
-            setLoaded(true)
-            dispatch(updateInfo({ msg: err.toString(), show: true, infoType: "Error" }));
-        })
+                }
+            }).catch(err => {
+                console.log(err)
+                setLoaded(true)
+                dispatch(updateInfo({ msg: err.toString(), show: true, infoType: "Error" }));
+            })
 
 
     }
 
     return (
         <View style={styles.main}>
-            <StatusBar barStyle={'default'}/>
-            <View style={styles.AppNameContainer} >
-                <Text style={styles.AppName} >HelpMeet</Text>
-            </View>
-            <View style={{ color: 'red', alignSelf: 'center', padding: 10, backgroundColor: 'yellow', borderRadius: 10 }}>
-                <Text>{error}</Text>
-            </View>
-            <KeyboardAvoidingView
-                style={styles.container}
-                behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-            >
-
-
+            <StatusBar barStyle={'default'} backgroundColor={'rgb(80,80,255)'} />
+            <ScrollView style={{alignSelf:'auto',marginTop:30}}>
+                <View style={styles.AppNameContainer} >
+                    <Text style={styles.AppName} >HelpMeet</Text>
+                </View>
+                <View style={{ color: 'red', alignSelf: 'center', padding: 10, backgroundColor: 'yellow', borderRadius: 10 }}>
+                    <Text>{error}</Text>
+                </View>
                 <View style={styles.inputContainer}>
                     <TextInput
                         value={userPhone}
                         onChangeText={(userPhone) => setUserPhone(userPhone)}
                         placeholder='Phone Number'
                         style={styles.input}
+                        keyboardType='number-pad'
                         cursorColor={'black'}
-                        ref = {phoneref}
-                        onSubmitEditing = {()=>passref.current.focus()}
+                        ref={phoneref}
+                        onSubmitEditing={() => passref.current.focus()}
                     />
                     <TextInput
                         value={userPassword}
@@ -197,7 +192,7 @@ const LoginScreen = ({ navigation, route }) => {
                         style={styles.input}
                         cursorColor={'black'}
                         ref={passref}
-                        onSubmitEditing = {loginHandler}
+                        onSubmitEditing={loginHandler}
                         secureTextEntry
                     />
                     <Pressable
@@ -229,29 +224,18 @@ const LoginScreen = ({ navigation, route }) => {
                         }
                     </TouchableOpacity>
                 </View>
+                <View style={{ marginTop: 50, alignSelf: 'center' }} >
+                    <Text>----- or continue with -------</Text>
+                </View>
 
-
-
-
-            </KeyboardAvoidingView>
-
-            <View style={{ marginTop: 50, alignSelf: 'center' }} >
-
-                <Text>----- or continue with -------</Text>
-
-            </View>
-
-            <TouchableOpacity activeOpacity={0.4} onPress={() => { navigation.navigate('Register') }}
-                style={{ alignSelf: 'center', flexDirection: 'row', margin: 10 }}>
-                <Text >New User?</Text>
-                <Text style={styles.signup} > Register here...</Text>
-            </TouchableOpacity>
-
+                <TouchableOpacity activeOpacity={0.4} onPress={() => { navigation.navigate('Register') }}
+                    style={{ alignSelf: 'center', flexDirection: 'row', margin: 10 }}>
+                    <Text >New User?</Text>
+                    <Text style={styles.signup} > Register here...</Text>
+                </TouchableOpacity>
+            </ScrollView>
 
         </View>
-
-
-
     )
 }
 

@@ -1,4 +1,4 @@
-import { StyleSheet, FlatList, TouchableOpacity, Image, Text, View, StatusBar, ImageBackground, ScrollView, RefreshControl, Pressable } from 'react-native'
+import { StyleSheet, FlatList, TouchableOpacity, Image, Text, View, StatusBar, ImageBackground, ScrollView, RefreshControl, Pressable, Alert } from 'react-native'
 
 import React, { useEffect, useState } from 'react'
 import axios from 'axios';
@@ -86,16 +86,15 @@ const Feed = () => {
     const onRefresh = () => {
         setloaded(false)
     }
-    return (
-        <View style={styles.feedScreen} >
-
-            <StatusBar barStyle={'default'} />
+    const ListHeader = () =>
+        <>
             <View style={{ flexDirection: 'row', width: '100%', justifyContent: 'space-around', marginBottom: 0 }}>
                 <Text style={styles.AppName}>HelpMeet</Text>
                 <View style={{ borderWidth: 0, width: '70%', justifyContent: 'center', alignItems: 'center', paddingRight: 10 }}>
                 </View>
             </View>
-            <Text style={{ fontSize: 20, fontWeight: 'bold', color: 'blue' }}>Welcome {userData.user_name}</Text>
+            <Text style={{ fontSize: 20, fontWeight: 'bold', color: 'blue' ,marginBottom:10}}>Welcome {userData.user_name}</Text>
+            <Pressable onPress={()=>Alert.alert("Fast Delivery Banner","We are working on this")}>
             <View style={{ display: 'flex', borderRadius: 20, backgroundColor: 'red', elevation: 8, overflow: 'hidden', borderColor: 'white', borderWidth: 1 }} >
                 <ImageBackground style={{ borderRadius: 20 }} source={{ uri: 'https://thumbs.dreamstime.com/b/delivery-company-worker-holding-grocery-box-food-order-supermarket-service-181612662.jpg' }} >
                     <View style={{ flexDirection: 'column-reverse', height: 120 }}>
@@ -103,9 +102,16 @@ const Feed = () => {
                     </View>
                 </ImageBackground>
             </View>
+            </Pressable>
+        </>
+    return (
+        <View style={styles.feedScreen} >
+           <StatusBar barStyle={'default'} backgroundColor={'rgb(200,0,100)'} />
             <FlatGrid
+                ListHeaderComponent={ListHeader }
                 itemDimension={100}
                 data={CategoriesData}
+                
                 refreshControl={
 
                     <RefreshControl refreshing={!loaded} onRefresh={onRefresh} title="Loading" />
@@ -114,7 +120,6 @@ const Feed = () => {
                 spacing={5}
                 renderItem={({ item, index }) => (
                     <Pressable
-                     
                         onPress={() => {
                             navigation.navigate('Service', {
                                 ServiceData: item

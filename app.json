@@ -1,10 +1,10 @@
 {
   "expo": {
-    "name": "FinalYearAPP",
+    "name": "HelpMeet",
     "slug": "FinalYearAPP",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
+    "icon": "./assets/NewAppIcon.jpg",
     "userInterfaceStyle": "light",
     "splash": {
       "image": "./assets/splash.png",
@@ -24,10 +24,24 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#FFFFFF"
-      }
+      },
+      "package": "com.yogendra_0.FinalYearAPP"
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    }
+    },
+    "extra": {
+      "eas": {
+        "projectId": "2426d84a-8276-4c1e-9374-cb1e77d73a66"
+      }
+    },
+    "plugins": [
+      [
+        "expo-location",
+        {
+          "locationAlwaysAndWhenInUsePermission": "Allow $(PRODUCT_NAME) to use your location."
+        }
+      ]
+    ]
   }
 }
