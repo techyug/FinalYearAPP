@@ -123,9 +123,9 @@ const ServiceProviderDashBord = () => {
   const ServicesList = () => (
     <>
       <ScrollView style={{ height: 200,zIndex:10 }} contentContainerStyle={{ padding: 10 }}
-        refreshControl={
-          <RefreshControl refreshing={!loaded} onRefresh={onRefresh} title="Loading" />
-        }
+        // refreshControl={
+        //   <RefreshControl refreshing={!loaded} title="Loading" />
+        // }
       >
         {servicesUnderSelectedCat.map((item, index) => (
           <Pressable onPress={() => {
@@ -194,17 +194,14 @@ const ServiceProviderDashBord = () => {
           }
         </View>
       </View>
-      <View style={{marginTop:60}}>
-        <AddServiceForm/>
-        <ServicesList/>
-      </View>
-      <ScrollView style={{ height: '100%'}} 
+     
+      <ScrollView style={{ height: '100%',marginTop:60}} 
       refreshControl={
         <RefreshControl refreshing={!loadedAssignedServices} onRefresh={onRefresh} title="Loading" />
       }
       >
         
-        {
+        {/* {
           IsSerivceRequestSucces &&
           <View style={{ backgroundColor: 'white', borderRadius: 10, elevation: 8, margin: 8 }}>
             <ImageBackground source={{ uri: selectedService.service_img }} style={{ height: 200 }} resizeMode={'cover'}>
@@ -215,7 +212,7 @@ const ServiceProviderDashBord = () => {
             </View>
             <Button title='Ok' />
           </View>
-        }
+        } */}
         {
           dataofServicesbyapi.map((item, index) => (
             <View key={index} style={{ borderColor: 'lightgray', flexDirection: 'row', justifyContent: 'space-between', borderWidth: 1, elevation: 6, borderRadius: 15, padding: 5, margin: 6, backgroundColor: 'white' }}>
@@ -238,6 +235,12 @@ const ServiceProviderDashBord = () => {
 
           ))
         }
+         <Pressable onPress={()=>{
+          navigation.navigate('AddServiceFromScreen')
+         }} style={{flexDirection:'row',borderRadius:10,padding:8,backgroundColor:'white',elevation:8,alignItems:'center',justifyContent:'center',margin:10}} >
+        <Text style={{fontSize:20}}>Add A Service</Text>
+        <Ionicons name='chevron-forward' size={30} />
+      </Pressable>
       </ScrollView>
     </View>
   )

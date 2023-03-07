@@ -12,8 +12,16 @@ import { store } from './Redux/store';
 import { Ionicons } from '@expo/vector-icons';
 import { updateInfo } from './Redux/actions';
 import ServiceProviderShowcase from './Screens/ServiceProviderShowcase';
+import AddServiceFormScreen from './Screens/AddServiceFormScreen';
+import * as Notifications from 'expo-notifications';
 const Stack = createNativeStackNavigator();
-
+Notifications.setNotificationHandler({
+  handleNotification: async () => ({
+    shouldShowAlert: true,
+    shouldPlaySound: false,
+    shouldSetBadge: false,
+  }),
+});
 function App() {
 
   const CustomNavigationConatiner = () => {
@@ -61,10 +69,11 @@ function App() {
               />
             ),
           }} name="ForgotPass" component={ForgotPassScreen} />
-          <Stack.Screen name='Register' options={{ headerShown: false, title: 'Regiter ', }} component={RegisterScreen} />
+          <Stack.Screen name='Register' options={{ headerShown: false, title: 'Regiter ',animation:'fade' }} component={RegisterScreen} />
           <Stack.Screen name="Home" options={{ headerShown: false, }} component={HomeScreen} />
           <Stack.Screen name='Service' component={ServiceScreen} />
           <Stack.Screen name='ProviderShowCase' component={ServiceProviderShowcase}/>
+          <Stack.Screen name='AddServiceFromScreen' options={{animation:'slide_from_right',title:'Add Services'}} component={AddServiceFormScreen} />
         </Stack.Navigator>
       </NavigationContainer>
     )

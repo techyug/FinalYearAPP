@@ -209,6 +209,7 @@ const RegisterScreen = ({ navigation, params }) => {
 
             }).then((res) => {
                 let re = res.data.toString();
+                console.log(re)
                 if (re.includes("Duplicate")) {
                     dispatch(updateInfo({ msg: re, show: true, infoType: "Error" }));
                     setLoading(false);
@@ -218,6 +219,11 @@ const RegisterScreen = ({ navigation, params }) => {
                     dispatch(updateInfo({ msg: "Account created...", show: true, infoType: "Success" }));
                     setLoading(false);
                     navigation.navigate('Login', { message: 'Account Created, Login Now' })
+                }
+                else{
+                    dispatch(updateInfo({ msg: re, show: true, infoType: "Error" }));
+                    setLoading(false);
+                    setError(res.data)
                 }
             }).catch((err) => {
                 dispatch(updateInfo({ msg: err.toString(), show: true, infoType: "Error" }));
