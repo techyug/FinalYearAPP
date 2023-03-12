@@ -6,6 +6,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { useDispatch, useSelector } from 'react-redux';
 import { userLogout } from '../Redux/actions';
+import { connectToSocket } from '../Constants/GlobalSocket';
 const styles = StyleSheet.create({
     profileTab: {
         flex: 1,
@@ -39,9 +40,10 @@ const Proflletab = () => {
     const default_profile = "https://cdn.pixabay.com/photo/2016/08/08/09/17/avatar-1577909_960_720.png"
     const dispatch = useDispatch();
     const user = useSelector(state => state.userData)
-
+var socket = connectToSocket()
     const userLogoutConstant = () => {
         dispatch(userLogout())
+        socket.disconnect()
         AsyncStorage.removeItem('@userData');
         navigation.replace('Login')
     }

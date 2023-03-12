@@ -25,10 +25,10 @@ export function onlineUserListChange(list){
         list:list
     }
 }
-export function updateMessages(message){
+export function updateMessages(messages){
     return {
         type:MESSAGE_UPDATE,
-        newMessage:message,
+        newMessage:messages,
     }
 }
 export function updateInfo(infoData){

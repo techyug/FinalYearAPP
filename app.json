@@ -3,8 +3,8 @@
     "name": "HelpMeet",
     "slug": "FinalYearAPP",
     "version": "1.0.0",
-    "orientation": "portrait",
-    "icon": "./assets/NewAppIcon.jpg",
+    "orientation": "all",
+    "icon": "./assets/1024.png",
     "userInterfaceStyle": "light",
     "splash": {
       "image": "./assets/splash.png",
@@ -21,8 +21,9 @@
       "supportsTablet": true
     },
     "android": {
+      "icon":"./assets/1024.png",
       "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
+        "foregroundImage": "./assets/1024.png",
         "backgroundColor": "#FFFFFF"
       },
       "package": "com.yogendra_0.FinalYearAPP"
@@ -39,8 +40,10 @@
       [
         "expo-location",
         {
-          "locationAlwaysAndWhenInUsePermission": "Allow $(PRODUCT_NAME) to use your location."
+          "locationAlwaysAndWhenInUsePermission": "Allow HelpMeet to use your location."
         }
+      
+        
       ]
     ]
   }

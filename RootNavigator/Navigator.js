@@ -18,25 +18,8 @@ const Navigator = () => {
     <NavigationContainer>
         
       <Stack.Navigator initialRouteName='Login'>
-      
         <Stack.Screen options={{ headerShown: false }} name="Login" component={LoginScreen} />
-        <Stack.Screen options={{
-          title: 'Reset Password', headerStyle: {
-            backgroundColor: 'white',
-          },
-          headerTintColor: 'rgba(210,0,100,0.9)',
-          headerTitleStyle: {
-            fontWeight: 'bold',
-          },
-
-          headerRight: () => (
-            <Button
-              onPress={() => alert('This is a button!')}
-              title="right button"
-              color="#aaa"
-            />
-          ),
-        }} name="ForgotPass" component={ForgotPassScreen} />
+        <Stack.Screen options={{ title: 'Reset Password'}} name="ForgotPass" component={ForgotPassScreen} />
         <Stack.Screen name='Register' options={{ headerShown: false, title: 'Regiter ', }} component={RegisterScreen} />
         <Stack.Screen name="Home" options={{ headerShown: false, }} component={HomeScreen} />
         <Stack.Screen name='Service' component={ServiceScreen} />

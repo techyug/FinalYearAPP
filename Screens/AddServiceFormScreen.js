@@ -160,6 +160,7 @@ const AddServiceFormScreen = () => {
         setProviderLocation(location)
         let resp = await Location.reverseGeocodeAsync(location.coords)
         setreadableLocation(resp[0])
+        console.log(readableLocation)
     }
     return (
         <View style={{flex:1,padding:10}}>
@@ -175,8 +176,8 @@ const AddServiceFormScreen = () => {
                             <TextInput placeholder='Latitude' value={ProviderLocation.coords.latitude.toString()} style={{padding:10,borderWidth:1,borderRadius:10,margin:3}}/>
                             <TextInput placeholder='Longitude' value={ProviderLocation.coords.longitude.toString()} style={{padding:10,borderWidth:1,borderRadius:10,margin:3}}/>
                             {
-                                readableLocation!==null &&
-                                <Text>Pincode : { readableLocation.region +" "+readableLocation.postalCode} </Text>
+                                readableLocation!=undefined &&
+                                 <Text>Pincode : { readableLocation.region +" "+readableLocation.postalCode} </Text>
                             }
                             <Button title='Fetch my Location' onPress={GetLocation} />
                             <View style={{ flexDirection: 'row',justifyContent:'space-around',marginTop:20  }}>

@@ -15,10 +15,10 @@ export const mainReducer = (state = initialState,action)=>{
             return {...state,isLoggedIn:true,userData:action.userData}
         case USER_LOGOUT:
             return{
-                ...state,isLoggedIn:false,userData:null
+                ...state,isLoggedIn:false,userData:null,messages:[]
             }
         case MESSAGE_UPDATE:
-            return {...state,messages:[...state.messages,action.newMessage]}
+            return {...state,messages:action.newMessage}
         case UPDATE_INFO:
             return {...state,info:action.newinfoData}
         default :

@@ -6,6 +6,7 @@ import { serverIP } from '../Constants/IPofBackned';
 import { defaultAvatarImage } from '../Constants/Gconstants';
 import { useDispatch } from 'react-redux';
 import { updateInfo } from '../Redux/actions';
+import * as Notifications from 'expo-notifications';
 
 const ServiceScreen = (props) => {
     const navigation = useNavigation();
@@ -17,6 +18,7 @@ const ServiceScreen = (props) => {
         setServiceData(props.route.params.ServiceData)
     }
     useEffect(() => {
+        
         navigation.setOptions({ title: serviceData.service_title })
         if (!loaded) {
             axios.get(serverIP + '/service-providers/' + serviceData.service_id)

@@ -1,1 +1,1 @@
-export const defaultAvatarImage='https://industrial.uii.ac.id/wp-content/uploads/2019/09/385-3856300_no-avatar-png-e1600750858753.jpg'
+export const defaultAvatarImage='https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460__340.png'
