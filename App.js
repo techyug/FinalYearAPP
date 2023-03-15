@@ -21,7 +21,10 @@ import { useEffect, useRef, useState } from 'react';
 import * as Device from 'expo-device';
 import ProviderProfileScreen from './Screens/ProviderProfileScreen';
 import ServiceofProviderScreen from './Screens/ServiceofProviderScreen';
-import { connectToSocket } from './Constants/GlobalSocket';
+
+import UserChatScreen from './Screens/UserChatScreen';
+import { io } from 'socket.io-client';
+import PersonalChatScreen from './Screens/PersonalChatScreen';
 const Stack = createNativeStackNavigator();
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
@@ -99,7 +102,7 @@ async function schedulePushNotification() {
 // });
 registerForPushNotificationsAsync().then(token => console.log("push token in app .js",token));
 function App() {
-  var socket = connectToSocket();
+  var socket = io()
   
   const [expoPushToken, setExpoPushToken] = useState('');
   const [notification, setNotification] = useState(false);
@@ -127,7 +130,7 @@ function App() {
     //   console.log("Anotikfdncf")
     // });
     return () => {
-socket.disconnect()
+  socket?.disconnect()
     //   // AppState.removeEventListener('change', handleAppStateChange);
       //Notifications.removeNotificationSubscription(notificationListener.current);
       Notifications.removeNotificationSubscription(responseListener.current);
@@ -171,15 +174,17 @@ socket.disconnect()
         
         </View>
         <Stack.Navigator initialRouteName='Login'>
-          <Stack.Screen options={{ headerShown: false }} name="Login" component={LoginScreen} />
+          <Stack.Screen options={{ headerShown: false ,animation:'slide_from_left'}} name="Login" component={LoginScreen} />
           <Stack.Screen options={{ title: 'Reset Password'}} name="ForgotPass" component={ForgotPassScreen} />
-          <Stack.Screen name='Register' options={{ headerShown: false, title: 'Regiter ',animation:'fade' }} component={RegisterScreen} />
-          <Stack.Screen name="Home" options={{ headerShown: false, }} component={HomeScreen} />
+          <Stack.Screen name='Register' options={{ headerShown: false, title: 'Regiter ',animation:'slide_from_right' }} component={RegisterScreen} />
+          <Stack.Screen name="Home" options={{ headerShown: false,animation:'slide_from_bottom' }} component={HomeScreen} />
           <Stack.Screen name='Service' component={ServiceScreen} />
           <Stack.Screen name='ProviderShowCase' component={ServiceProviderShowcase}/>
           <Stack.Screen name='AddServiceFromScreen' options={{animation:'slide_from_right',title:'Add Services'}} component={AddServiceFormScreen} />
           <Stack.Screen name='ProviderProfileScreen' options={{animation:'slide_from_right',title:'Profile'}} component ={ProviderProfileScreen}/>
           <Stack.Screen name='ServiceofProviderScreen' options={{animation:'slide_from_right',title:'Service'}} component={ServiceofProviderScreen}/>
+          <Stack.Screen name='UserChatScreen' options={{animation:'slide_from_right',title:'Chats'}} component={UserChatScreen}/>
+          <Stack.Screen name='PersonalChatScreen' options={{animation:'slide_from_right'}} component={PersonalChatScreen}/>
         </Stack.Navigator>
       </NavigationContainer>
     )

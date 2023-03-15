@@ -10,6 +10,7 @@ import * as Location from 'expo-location';
 import { serverIP } from '../Constants/IPofBackned';
 import { Icon, Input, ThemeProvider } from 'react-native-elements';
 import { defaultAvatarImage } from '../Constants/Gconstants';
+import { callApi } from '../Constants/Async_functions';
 const ud = { "CreatedAt": "2023-03-01T10:54:51.000Z", "ProviderStatus": "New Provider", "ServiceAddress": "{\"postalCode\":\"261121\",\"country\":\"India\",\"isoCountryCode\":\"IN\",\"subregion\":\"Lucknow Division\",\"city\":\"Fazilpur\",\"street\":null,\"district\":null,\"name\":\"PPMX+3PF\",\"streetNumber\":null,\"region\":\"Uttar Pradesh\",\"timezone\":null}", "ServiceLatitude": "27.735472", "ServiceLongitude": "80.750369", "ServicePincode": 261121, "ServiceProvideName": "Yogendra singh", "ServiceProviderEmail": "moralfun0@gmail.com", "ServiceProviderId": 2, "ServiceProviderIdinMap": 2, "ServiceProviderImage": "https://www.pngall.com/wp-content/uploads/12/Avatar-Profile-Vector.png", "ServiceProviderPassword": "567890", "ServiceProviderPhone": "8429582215", "ServiceStatus": "Requested for approval", "msg": "Login Success", "role": "Service Provider", "service_description": "All type of Camera operators", "service_id": 1, "service_img": "https://img.freepik.com/free-vector/videographer-concept-illustration_114360-1439.jpg", "service_title": "Camera man", "super_cat_id": 2 }
 
 const ServiceProviderDashBord = () => {
@@ -36,14 +37,20 @@ const ServiceProviderDashBord = () => {
   }
  
   useEffect(() => {
-    Axios.get( serverIP+'/messages-of-provider/'+userData.ServiceProviderId).then((r)=>{
+    callApi(serverIP+'/messages-of-provider/'+userData.ServiceProviderId,'GET').then((r)=>{
       dispatch(updateMessages(r.data))
       
     }).catch(e=>{
       
     })
+    // Axios.get( serverIP+'/messages-of-provider/'+userData.ServiceProviderId).then((r)=>{
+    //   dispatch(updateMessages(r.data))
+      
+    // }).catch(e=>{
+      
+    // })
     if(!loadedAssignedServices){
-      Axios.get(serverIP+'/services-of-provider/'+userData.ServiceProviderId).then(res=>{
+      callApi(serverIP+'/services-of-provider/'+userData.ServiceProviderId).then(res=>{
         setdataofServicesbyapi(res.data)
         setloadedAssignedServices(true)
       }).catch(e=>{
@@ -52,7 +59,7 @@ const ServiceProviderDashBord = () => {
       })
     }
     if (super_cat.length < 1) {
-      Axios.get(serverIP + '/super').then(res => {
+      callApi(serverIP + '/super').then(res => {
         setSuperCat(res.data)
         setselectedSuperCat(res.data[0])
       })
@@ -60,7 +67,7 @@ const ServiceProviderDashBord = () => {
 
 
     if (!loaded) {
-      Axios.get(serverIP + '/services/' + selectedSuperCat?.super_cat_id).then(res => {
+      callApi(serverIP + '/services/' + selectedSuperCat?.super_cat_id).then(res => {
         setservicesUnderSelectedCat(res.data)
         setloaded(true)
       }).catch(e => {
@@ -77,7 +84,7 @@ const ServiceProviderDashBord = () => {
   }
   const AddServicewithProvider = () => {
     setloaded(false)
-    Axios.post(serverIP + '/add-service-to-provider', { selectedService: selectedService, userData: userData, ServiceLocation: ProviderLocation, ReadableServiceLocation: readableLocation }).
+    callApi(serverIP + '/add-service-to-provider','POST' ,{ selectedService: selectedService, userData: userData, ServiceLocation: ProviderLocation, ReadableServiceLocation: readableLocation }).
       then((res) => {
         let resp = res.data.toString();
         if (resp.includes('Duplicate')) {

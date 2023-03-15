@@ -9,6 +9,8 @@ import { serverIP } from '../Constants/IPofBackned';
 import { useNavigation } from '@react-navigation/native';
 import { defaultAvatarImage } from '../Constants/Gconstants';
 import { ActivityIndicator } from 'react-native-paper';
+import { callApi } from '../Constants/Async_functions';
+import { connectToSocket } from '../Constants/GlobalSocket';
 
 const ProviderProfileScreen = (props) => {
     const userData = useSelector(state => state.userData)
@@ -17,8 +19,11 @@ const ProviderProfileScreen = (props) => {
     const navigation = useNavigation()
     const dispatch = useDispatch();
     console.log(props.route.params)
-
+    const socket = connectToSocket()
     const userLogoutConstant = () => {
+        
+        socket.emit('im-not-active',{token:userData.token})
+        socket.disconnect();
         dispatch(userLogout())
         AsyncStorage.removeItem('@userData');
         // navigation.replace('Login')
@@ -29,7 +34,7 @@ const ProviderProfileScreen = (props) => {
     }
     useEffect(() => {
         if (!loadedAssignedServices) {
-            Axios.get(serverIP + '/services-of-provider/' + userData.ServiceProviderId).then(res => {
+            callApi(serverIP + '/services-of-provider/' + userData.ServiceProviderId).then(res => {
                 setdataofServicesbyapi(res.data)
                 setloadedAssignedServices(true)
             }).catch(e => {

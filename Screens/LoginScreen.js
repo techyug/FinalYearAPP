@@ -96,7 +96,9 @@ const styles = StyleSheet.create({
     }
 })
 const LoginScreen = ({ navigation, route }) => {
+    const [clickLogin,setclickLogin] = useState(false)
     const dispatch = useDispatch();
+    const userData = useSelector(s => s.userData)
     const [userPhone, setUserPhone] = useState('');
     const [userPassword, setUserPassword] = useState('')
     const [error, setError] = useState(route.params ? route.params.message : "Login Please...")
@@ -110,31 +112,59 @@ const LoginScreen = ({ navigation, route }) => {
             // saving error
         }
     }
-    useEffect(() => {
-        (async () => {
-            let value = await AsyncStorage.getItem('@userData')
-            if (value !== null) {
-                const userData = JSON.parse(value);
-                dispatch(userLogin(userData));
-                navigation.replace('Home')
+    const LoginFromStorageData = async () => {
+        let value = await AsyncStorage.getItem('@userData')
 
+        if (value) {
+            let  userData = JSON.parse(value);
+            console.log(userData)
+            switch (userData.role) {
+                case "user":
+                    console.log("user")
+                    setUserPhone(userData.user_phone)
+                    setUserPassword(userData.user_pass)
+                    setclickLogin(true)
 
+                case 'Service Provider':
+                    console.log("provider")
+                    setUserPhone(userData.ServiceProviderPhone)
+                    setUserPassword(userData.ServiceProviderPassword)
+                    setclickLogin(true)
+                    
             }
-        })()
-    }, []);
+
+            // dispatch(userLogin(userData));
+            // navigation.replace('Home')
+
+
+        }
+
+
+    }
+    
+    useEffect(() => {
+        if(!clickLogin)
+            LoginFromStorageData().finally(d=>console.log(d))
+        if(clickLogin){
+            loginHandler()
+        }
+    }, [clickLogin]);
 
     const validateInpute = () => {
-        if (userPhone.length < 10 || userPhone.length > 10) {
-            phoneref.current.focus()
-            return false;
-        } else if (userPassword.length < 4) {
-            passref.current.focus()
-            return false;
-        }
+       
+        // if (userPhone.length < 10 || userPhone.length > 10) {
+        //     phoneref.current.focus()
+        //     return false;
+        // } else if (userPassword.length < 4) {
+        //     passref.current.focus()
+        //     return false;
+        // }
         return true;
     }
     const loginHandler = () => {
         setLoaded(false)
+        console.log("loginhandler")
+        if(!userPhone) return
         if (!validateInpute()) {
             dispatch(updateInfo({ msg: "All inputs are Required", show: true, infoType: "Error" }));
             setLoaded(true)
@@ -144,6 +174,10 @@ const LoginScreen = ({ navigation, route }) => {
             .then(res => {
                 if (res.data.msg === 'Login Success') {
                     storeData(res.data);
+
+                    console.log(res.data)
+                    delete res.data.ServiceProviderPassword;
+                    console.log(res.data)
                     dispatch(userLogin(res.data))
                     setLoaded(true)
                     dispatch(updateInfo({ msg: "Login Success", show: true, infoType: "Success" }));
@@ -167,7 +201,7 @@ const LoginScreen = ({ navigation, route }) => {
     return (
         <View style={styles.main}>
             <StatusBar barStyle={'default'} backgroundColor={'rgb(80,80,255)'} />
-            <ScrollView style={{alignSelf:'auto',marginTop:30}}>
+            <ScrollView style={{ alignSelf: 'auto', marginTop: 30 }}>
                 <View style={styles.AppNameContainer} >
                     <Text style={styles.AppName} >HelpMeet</Text>
                 </View>

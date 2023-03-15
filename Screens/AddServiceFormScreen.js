@@ -8,6 +8,7 @@ import Axios from 'axios'
 import { serverIP } from '../Constants/IPofBackned';
 import { Button } from 'react-native';
 import * as Location from 'expo-location';
+import { callApi } from '../Constants/Async_functions';
 
 
 const AddServiceFormScreen = () => {
@@ -35,14 +36,14 @@ const AddServiceFormScreen = () => {
     useEffect(() => {
 
         if (super_cat.length < 1) {
-            Axios.get(serverIP + '/super').then(res => {
+            callApi(serverIP + '/super').then(res => {
                 setSuperCat(res.data)
                 setselectedSuperCat(res.data[0])
             }).catch(e => console.log(e))
         }
 
         if (!loaded) {
-            Axios.get(serverIP + '/services/' + selectedSuperCat?.super_cat_id).then(res => {
+            callApi(serverIP + '/services/' + selectedSuperCat?.super_cat_id).then(res => {
                 setservicesUnderSelectedCat(res.data)
                 setloaded(true)
             }).catch(e => {
@@ -59,7 +60,8 @@ const AddServiceFormScreen = () => {
     }
     const AddServicewithProvider = () => {
         setloaded(false)
-        Axios.post(serverIP + '/add-service-to-provider', { selectedService: selectedService, userData: userData, ServiceLocation: ProviderLocation, ReadableServiceLocation: readableLocation }).
+        if(selectedService!=null)
+        callApi(serverIP + '/add-service-to-provider','POST', { selectedService: selectedService, userData: userData, ServiceLocation: ProviderLocation, ReadableServiceLocation: readableLocation }).
             then((res) => {
                 let resp = res.data.toString();
                 if (resp.includes('Duplicate')) {

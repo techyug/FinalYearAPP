@@ -3,7 +3,7 @@
     "name": "HelpMeet",
     "slug": "FinalYearAPP",
     "version": "1.0.0",
-    "orientation": "all",
+    "orientation": "portrait",
     "icon": "./assets/1024.png",
     "userInterfaceStyle": "light",
     "splash": {

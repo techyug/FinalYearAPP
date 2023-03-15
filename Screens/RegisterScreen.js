@@ -329,13 +329,13 @@ const RegisterScreen = ({ navigation, params }) => {
                         }
                     </TouchableOpacity>
                 </View>
-                <View style={{ marginTop: 10, padding: 5, alignSelf: 'center' }}>
+                {/* <View style={{ marginTop: 10, padding: 5, alignSelf: 'center' }}>
                     <Text>----------- or continue with -----------</Text>
                     <View style={{ flexDirection: 'row', justifyContent: 'space-evenly' }}>
                         <Ionicons name='logo-google' size={30} />
                         <Ionicons name='logo-facebook' size={30} />
                     </View>
-                </View>
+                </View> */}
                 <TouchableOpacity activeOpacity={0.5} onPress={() => {
                     navigation.navigate('Login')
                 }}

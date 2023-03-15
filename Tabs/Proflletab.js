@@ -10,7 +10,7 @@ import { connectToSocket } from '../Constants/GlobalSocket';
 const styles = StyleSheet.create({
     profileTab: {
         flex: 1,
-        backgroundColor:'white'
+        backgroundColor: 'white'
 
     },
     userdetails: {
@@ -40,21 +40,23 @@ const Proflletab = () => {
     const default_profile = "https://cdn.pixabay.com/photo/2016/08/08/09/17/avatar-1577909_960_720.png"
     const dispatch = useDispatch();
     const user = useSelector(state => state.userData)
-var socket = connectToSocket()
+    const messages = useSelector(s => s.messages)
+    var socket = connectToSocket()
     const userLogoutConstant = () => {
         dispatch(userLogout())
+        socket.emit('im-not-active', { token: user.token })
         socket.disconnect()
         AsyncStorage.removeItem('@userData');
         navigation.replace('Login')
     }
     return (
-        <View style={{flex:1}}>
-            <ScrollView  style={{flex:1}}  contentContainerStyle={{alignItems:'center'}} >
+        <View style={{ flex: 1 }}>
+            <ScrollView style={{ flex: 1 }} contentContainerStyle={{ alignItems: 'center' }} >
 
-                <TouchableOpacity style={{ backgroundColor: 'red', borderColor: 'white', borderWidth: 1, flexDirection: 'row', width: "50%", padding: 10, borderRadius: 10, justifyContent: 'space-between', paddingHorizontal: 20, alignItems: 'center',alignSelf:'flex-end',margin:20,elevation:8 }} activeOpacity={0.6} onPress={userLogoutConstant}  >
+                <TouchableOpacity style={{ backgroundColor: 'red', borderColor: 'white', borderWidth: 1, flexDirection: 'row', width: "50%", padding: 10, borderRadius: 10, justifyContent: 'space-between', paddingHorizontal: 20, alignItems: 'center', alignSelf: 'flex-end', margin: 20, elevation: 8 }} activeOpacity={0.6} onPress={userLogoutConstant}  >
 
                     <Text style={{ color: 'white', fontSize: 20, fontWeight: '500' }}>Logout</Text>
-                    <Ionicons name='exit' size={30} color="white"/>
+                    <Ionicons name='exit' size={30} color="white" />
                 </TouchableOpacity>
                 <Image
                     source={{ uri: user.user_image_url ? user.user_image_url : default_profile }}
@@ -63,20 +65,26 @@ var socket = connectToSocket()
                 <Text>{user.user_name}</Text>
                 <Text>{user.user_phone}</Text>
                 <Text>{user.user_email}</Text>
-                <Pressable style={styles.userAction} onPress = {()=>Alert.alert("Conversations","We are working on this feature")}>
-                    <Text style={{ color: 'white', fontWeight: '600', fontSize: 18 }}>Conversations</Text>
-                    <Ionicons name='arrow-forward' size={20} color='white'/>
+                <Pressable style={styles.userAction} onPress={() => {
+                    navigation.navigate('UserChatScreen')
+                }}>
+                    <View style={{flexDirection:'row',}}>
+                    
+                        <Text style={{ color: 'white', fontWeight: '600', fontSize: 18 }}>Conversations</Text>
+                        <Text style={{ alignSelf: 'center',marginLeft:5,backgroundColor:'red',borderRadius:10,padding:7,color:'white' }} >{messages.length}</Text>
+                    </View>
+                    <Ionicons name='arrow-forward' size={20} color='white' />
                 </Pressable>
 
-                <Pressable style={styles.userAction} onPress = {()=>Alert.alert("Help","We are working on this feature")}>
+                <Pressable style={styles.userAction} onPress={() => Alert.alert("Help", "We are working on this feature")}>
 
                     <Text style={{ color: 'white', fontWeight: '600', fontSize: 18 }}>Help</Text>
-                    <Ionicons name='arrow-forward' size={20} color='white'/>
+                    <Ionicons name='arrow-forward' size={20} color='white' />
                 </Pressable>
-                <Pressable style={styles.userAction} onPress = {()=>Alert.alert("Invite","We are working on this feature")}>
+                <Pressable style={styles.userAction} onPress={() => Alert.alert("Invite", "We are working on this feature")}>
 
                     <Text style={{ color: 'white', fontWeight: '600', fontSize: 18 }}>Invite</Text>
-                    <Ionicons name='arrow-forward' size={20} color='white'/>
+                    <Ionicons name='arrow-forward' size={20} color='white' />
                 </Pressable>
             </ScrollView>
         </View>

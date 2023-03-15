@@ -1,4 +1,4 @@
-import { View, Text, Image, ScrollView, Button,TextInput } from 'react-native'
+import { View, Text, Image, ScrollView, Button, TextInput, FlatList } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { useNavigation } from '@react-navigation/native'
 
@@ -6,15 +6,27 @@ import { defaultAvatarImage } from '../Constants/Gconstants';
 import { Ionicons } from '@expo/vector-icons';
 import { Axios } from 'axios';
 import { Input } from 'react-native-elements';
-
+import { connectToSocket } from '../Constants/GlobalSocket';
+import { io } from 'socket.io-client';
+import { useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
+import { updateMessages } from '../Redux/actions';
+import { getISTLocal } from '../Constants/Async_functions';
 
 
 const ServiceProviderShowcase = (props) => {
     const navigation = useNavigation();
+
+    const userData = useSelector(s => s.userData)
     const [chatboxHeight, setchatboxHeight] = useState(60)
     const p = { "CreatedAt": "2023-02-28T15:31:40.000Z", "ProviderStatus": "New Provider", "ServiceProvideName": "Kaushalendra ", "ServiceProviderEmail": "Ttststys@gmail.com", "ServiceProviderId": 1, "ServiceProviderIdinMap": 1, "ServiceProviderImage": null, "ServiceProviderPassword": "54321", "ServiceProviderPhone": "9696567462", "service_description": "All type of Camera operators", "service_id": 1, "service_img": "https://img.freepik.com/free-vector/videographer-concept-illustration_114360-1439.jpg", "service_title": "Camera man", "super_cat_id": 2 }
     const ProviderData = props.route.params.ProviderData
-
+    const allmessages = useSelector(s => s.messages)
+    const messages =allmessages.filter(i=>i.toPhone==ProviderData.ServiceProviderPhone ||  i.fromPhone==ProviderData.ServiceProviderPhone)
+    console.log("alll:",allmessages)
+    console.log("ppppp:",messages)
+    const [chatBox, setChabox] = useState("");
+    var socket = connectToSocket();
 
     useEffect(() => {
         navigation.setOptions({ title: ProviderData.ServiceProvideName })
@@ -23,7 +35,35 @@ const ServiceProviderShowcase = (props) => {
 
         }
     }, [])
+    const dispatch = useDispatch()
+  let msg  = {"fromPhone": "7080784497", "msg": "Ffff", "senderName": "Yogendsingh", "sentAt": "2023-03-13T15:53:19.100Z", "toPhone": "8429582215"}
+    const handleSendMessage = () => {
+        if (chatBox.length) {
 
+            socket.emit('new-message', {
+                fromPhone: userData.user_phone,
+                sentAt: new Date(),
+                senderName: userData.user_name,
+                toPhone: ProviderData.ServiceProviderPhone,
+                msg: chatBox
+            }, (d) => {
+
+                dispatch(updateMessages([...allmessages, {
+                    fromPhone: userData.user_phone,
+                    sentAt: getISTLocal().toString(),
+                    receivedAt : "0",
+                    receiverName:ProviderData.ServiceProvideName,
+                    senderName: userData.user_name,
+                    toPhone: ProviderData.ServiceProviderPhone,
+                    msg: chatBox
+                }]))
+                
+                console.log("call back", d)
+            })
+            setChabox('');
+        } else return
+
+    }
     const openchatBox = () => {
         if (chatboxHeight == 300) {
             setchatboxHeight(60);
@@ -31,16 +71,16 @@ const ServiceProviderShowcase = (props) => {
 
     }
     const ProviderNameBox = () =>
-        <View style={{ flexDirection: 'row', justifyContent: 'space-between', paddingHorizontal: 10, marginTop: 5, paddingVertical: 0, alignItems: 'center', backgroundColor: 'white', borderRadius: 20, elevation: 2, }}>
+        <View style={{ flexDirection: 'row', justifyContent: 'space-between', paddingHorizontal: 10, marginTop: 5, paddingVertical: 10, alignItems: 'center', backgroundColor: 'white', borderRadius: 20, elevation: 2, }}>
             <View style={{ flexDirection: 'row', justifyContent: 'flex-start' }}>
                 <Image style={{ borderRadius: 30, borderColor: 'red', borderWidth: 2 }} source={{ uri: p.ServiceProviderImage || defaultAvatarImage, height: 60, width: 60 }} />
                 <View style={{ justifyContent: "space-evenly", marginLeft: 10 }}>
-                    <Text style={{ fontWeight: 'bold' }}>{p.ServiceProvideName}</Text>
-                    <Text style={{ backgroundColor: 'blue', color: 'white', borderRadius: 10, textAlign: 'center', padding: 3, fontSize: 12 }}>{p.service_title}</Text>
+                    <Text style={{ fontWeight: 'bold' }}>{ProviderData.ServiceProvideName}</Text>
+                    <Text style={{ backgroundColor: 'blue', color: 'white', borderRadius: 10, textAlign: 'center', padding: 3, fontSize: 12 }}>{ProviderData.service_title}</Text>
                 </View>
             </View>
             <View>
-                <Text>{p.ProviderStatus}</Text>
+                <Text>{ProviderData.ProviderStatus}</Text>
             </View>
         </View>
 
@@ -92,16 +132,28 @@ const ServiceProviderShowcase = (props) => {
                     </View>
                 </View>
             </ScrollView>
-            <View style={{ height: chatboxHeight, borderTopWidth: 2, elevation: 5 }}>
+            <View style={{ height: chatboxHeight, borderTopWidth: 2, justifyContent: 'space-between', elevation: 5 }}>
                 <View style={{ flexDirection: 'row', justifyContent: 'space-evenly', backgroundColor: 'white', padding: 10, }}>
                     <Button title='Chat' onPress={openchatBox} color={'orange'} />
                     <Button title='Send Booking request' color={'green'} />
                 </View>
                 {
                     chatboxHeight != 60 &&
-                    <View style={{backgroundColor:'white',flex:1}}>
-                       <TextInput placeholder='hdi'/>
-                        <Input placeholder='Write message' style={{paddingRight:20,borderWidth:0}}  containerStyle={{paddingHorizontal:20,borderBottomWidth:0}}  rightIcon={()=>(<Ionicons name='send' style={{}} size={25} color={'green'}/>)}/>
+                    <FlatList data={messages} style={{paddingHorizontal:20}}  renderItem={({item,index})=>(
+                        <View style={{backgroundColor:'white',padding:10,borderRadius:5,alignSelf:item.toPhone!==userData.user_phone?'flex-end':'flex-start',margin:2}} >
+                            <Text>
+                                {item.msg}
+                            </Text>
+                            
+                        </View>
+                    )}/>
+                }
+
+                {
+                    chatboxHeight != 60 &&
+                    <View style={{ backgroundColor: 'white' }}>
+
+                        <Input placeholder='Write message' value={chatBox} onSubmitEditing={handleSendMessage} onChangeText={t => setChabox(t)} style={{ paddingRight: 20, borderWidth: 0 }} containerStyle={{ paddingHorizontal: 20, borderBottomWidth: 0 }} rightIcon={() => (<Ionicons onPress={handleSendMessage} name='send' style={{}} size={25} color={'green'} />)} />
                     </View>
                 }
             </View>

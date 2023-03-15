@@ -8,6 +8,7 @@ import { FlatGrid } from 'react-native-super-grid';
 import { useNavigation } from '@react-navigation/native';
 import { useDispatch, useSelector } from 'react-redux';
 import { updateInfo } from '../Redux/actions';
+import { callApi } from '../Constants/Async_functions';
 
 const styles = StyleSheet.create({
     feedScreen: {
@@ -69,17 +70,28 @@ const Feed = () => {
     const [loaded, setloaded] = useState(false)
     useEffect(() => {
         if (!loaded)
-            axios.get(serverIP + '/services/')
-                .then(res => {
-                    setCategoryData(res.data);
-                    setloaded(true)
+            callApi(serverIP + '/services', 'GET').then(res => {
+                setCategoryData(res.data);
+                setloaded(true)
 
-                }).catch(err => {
-                    console.log(serverIP + '/login');
-                    console.log(err);
-                    setloaded(true)
-                    dispatch(updateInfo({ msg: err.toString(), show: true, infoType: "Error" }));
-                })
+            }).catch(err => {
+
+                console.log(err);
+                setloaded(true)
+                dispatch(updateInfo({ msg: err.toString(), show: true, infoType: "Error" }));
+            })
+
+        // axios.get(serverIP + '/services/')
+        //     .then(res => {
+        //         setCategoryData(res.data);
+        //         setloaded(true)
+
+        //     }).catch(err => {
+
+        //         console.log(err);
+        //         setloaded(true)
+        //         dispatch(updateInfo({ msg: err.toString(), show: true, infoType: "Error" }));
+        //     })
 
     }, [loaded])
 
@@ -93,25 +105,25 @@ const Feed = () => {
                 <View style={{ borderWidth: 0, width: '70%', justifyContent: 'center', alignItems: 'center', paddingRight: 10 }}>
                 </View>
             </View>
-            <Text style={{ fontSize: 20, fontWeight: 'bold', color: 'blue' ,marginBottom:10}}>Welcome {userData.user_name}</Text>
-            <Pressable onPress={()=>Alert.alert("Fast Delivery Banner","We are working on this")}>
-            <View style={{ display: 'flex', borderRadius: 20, backgroundColor: 'red', elevation: 8, overflow: 'hidden', borderColor: 'white', borderWidth: 1 }} >
-                <ImageBackground style={{ borderRadius: 20 }} source={{ uri: 'https://thumbs.dreamstime.com/b/delivery-company-worker-holding-grocery-box-food-order-supermarket-service-181612662.jpg' }} >
-                    <View style={{ flexDirection: 'column-reverse', height: 120 }}>
-                        <Text style={{ backgroundColor: 'rgba(0,0,0,0.5)', fontWeight: 'bold', alignSelf: 'center', borderRadius: 20, padding: 5, color: 'white', fontSize: 20 }}>Get Items Delivered in 10 Minutes</Text>
-                    </View>
-                </ImageBackground>
-            </View>
+            <Text style={{ fontSize: 20, fontWeight: 'bold', color: 'blue', marginBottom: 10 }}>Welcome {userData.user_name}</Text>
+            <Pressable onPress={() => Alert.alert("Fast Delivery Banner", "We are working on this")}>
+                <View style={{ display: 'flex', borderRadius: 20, backgroundColor: 'red', elevation: 8, overflow: 'hidden', borderColor: 'white', borderWidth: 1 }} >
+                    <ImageBackground style={{ borderRadius: 20 }} source={{ uri: 'https://thumbs.dreamstime.com/b/delivery-company-worker-holding-grocery-box-food-order-supermarket-service-181612662.jpg' }} >
+                        <View style={{ flexDirection: 'column-reverse', height: 120 }}>
+                            <Text style={{ backgroundColor: 'rgba(0,0,0,0.5)', fontWeight: 'bold', alignSelf: 'center', borderRadius: 20, padding: 5, color: 'white', fontSize: 20 }}>Get Items Delivered in 10 Minutes</Text>
+                        </View>
+                    </ImageBackground>
+                </View>
             </Pressable>
         </>
     return (
         <View style={styles.feedScreen} >
-           <StatusBar barStyle={'default'} backgroundColor={'rgb(200,0,100)'} />
+            <StatusBar barStyle={'default'} backgroundColor={'rgb(200,0,100)'} />
             <FlatGrid
-                ListHeaderComponent={ListHeader }
+                ListHeaderComponent={ListHeader}
                 itemDimension={100}
                 data={CategoriesData}
-                
+
                 refreshControl={
 
                     <RefreshControl refreshing={!loaded} onRefresh={onRefresh} title="Loading" />
