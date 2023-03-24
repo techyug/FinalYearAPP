@@ -1,9 +1,9 @@
 import { View, Text, FlatList } from 'react-native'
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { useNavigation } from '@react-navigation/native'
 import { connectToSocket } from '../Constants/GlobalSocket';
 import { useDispatch, useSelector } from 'react-redux';
-import { updateMessages } from '../Redux/actions';
+import { newMessageToRedux } from '../Redux/actions';
 import { getISTLocal } from '../Constants/Async_functions';
 import { Input } from 'react-native-elements';
 import { Ionicons } from '@expo/vector-icons';
@@ -13,10 +13,12 @@ const PersonalChatScreen = (props) => {
     const [chatBox, setChabox] = useState("");
     const socket = connectToSocket()
     const chatToData = props.route.params.ChatTo
-    console.log(chatToData)
     const userData = useSelector(s=>s.userData)
     const dispatch = useDispatch()
-
+    const flatListRef = useRef(null);
+    const Allmessages = useSelector(s=>s.messages1)
+    const messages =Allmessages.get(chatToData)||[]
+    const navigation = useNavigation()
 
     let myName = "";
     let MyPhone = '';
@@ -27,39 +29,43 @@ const PersonalChatScreen = (props) => {
         myName = userData.ServiceProvideName
         MyPhone = userData.ServiceProviderPhone
     }
-    const Allmessages = useSelector(s=>s.messages)
-    const messages =Allmessages.filter(i=>i.toPhone==chatToData.key || i.fromPhone==chatToData.key)
-    console.log("all messages :",Allmessages)
-    console.log("filered : ",messages)
-    const navigation = useNavigation()
+   
     useEffect(() => {
         navigation.setOptions({
-            title: chatToData.value[0].senderName
+            title: messages[0]?messages[0].senderName:"Chat "
         })
     }, [])
+    useEffect(()=>{
+        if(messages && messages.length)
+       flatListRef.current.scrollToEnd({ animated: true });
+    
+       },[messages.length])
+
     const handleSendMessage = () => {
         if (chatBox.length) {
-
             socket.emit('new-message', {
                 fromPhone: MyPhone,
-                sentAt: getISTLocal().toString(),
+                sentAt: new Date(),
                 senderName: myName,
-                toPhone: chatToData.key,
+                toPhone: chatToData,
                 msg: chatBox
             }, (d) => {
-
-                dispatch(updateMessages([...Allmessages, {
-                    fromPhone: MyPhone,
+                let f = {
+                    fromPhone: "0",
                     sentAt: getISTLocal().toString(),
                     receivedAt : "0",
-                    receiverName:chatToData.value[0].senderName,
+                    receiverName:"dvds",
                     senderName: myName,
-                    toPhone: chatToData.key,
+                    toPhone: chatToData,
                     msg: chatBox
-                }]))
+                }
                 
+                dispatch(newMessageToRedux(f))
                 console.log("call back", d)
+                if(messages.length)
+                flatListRef.current.scrollToEnd({ animated: true });
             })
+           
             setChabox('');
         } else return
     }
@@ -67,18 +73,18 @@ const PersonalChatScreen = (props) => {
         <View style={{flex:1}}>
             <FlatList
                 data={messages}
+                ref={flatListRef}
                 renderItem={({ item, index }) => (
-                    <View style={{ backgroundColor: 'white', padding: 10, borderRadius: 5, alignSelf: item.fromPhone==MyPhone?'flex-end':'flex-start', margin: 2 }} >
+                    <View style={{ backgroundColor: 'white', padding: 10,maxWidth:'75%', borderRadius: 5, alignSelf:item.toPhone.length<10 ?'flex-start':'flex-end', margin: 2 }} >
                         <Text>
                             {item.msg}
                         </Text>
-
                     </View>
                 )}
             />
             <View style={{ backgroundColor: 'white' }}>
 
-                <Input placeholder='Write message' value={chatBox} onSubmitEditing={handleSendMessage} onChangeText={t => setChabox(t)} style={{ paddingRight: 20, borderWidth: 0 }} containerStyle={{ paddingHorizontal: 20, borderBottomWidth: 0 }} rightIcon={() => (<Ionicons onPress={handleSendMessage} name='send' style={{}} size={25} color={'green'} />)} />
+                <Input placeholder='Write message' value={chatBox} onFocu={()=>flatListRef.current.scrollToEnd({animated:true})} onSubmitEditing={handleSendMessage} onChangeText={t => setChabox(t)} style={{ paddingRight: 20, borderWidth: 0 }} containerStyle={{ paddingHorizontal: 20, borderBottomWidth: 0 }} rightIcon={() => (<Ionicons onPress={handleSendMessage} name='send' style={{}} size={25} color={'green'} />)} />
             </View>
         </View>
     )

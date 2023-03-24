@@ -97,6 +97,7 @@ const styles = StyleSheet.create({
 })
 const LoginScreen = ({ navigation, route }) => {
     const [clickLogin,setclickLogin] = useState(false)
+    const [showSplash,setshowSplash] = useState(false)
     const dispatch = useDispatch();
     const userData = useSelector(s => s.userData)
     const [userPhone, setUserPhone] = useState('');
@@ -116,6 +117,7 @@ const LoginScreen = ({ navigation, route }) => {
         let value = await AsyncStorage.getItem('@userData')
 
         if (value) {
+            setshowSplash(true)
             let  userData = JSON.parse(value);
             console.log(userData)
             switch (userData.role) {
@@ -150,26 +152,31 @@ const LoginScreen = ({ navigation, route }) => {
         }
     }, [clickLogin]);
 
-    const validateInpute = () => {
-       
-        // if (userPhone.length < 10 || userPhone.length > 10) {
-        //     phoneref.current.focus()
-        //     return false;
-        // } else if (userPassword.length < 4) {
-        //     passref.current.focus()
-        //     return false;
-        // }
+    function validateInpute () {
+        if ( userPhone!=undefined && (userPhone.length < 10 || userPhone.length > 10)) {
+            phoneref.current.focus()
+            return false;
+        } 
+        if ( userPassword!=undefined && userPassword.length < 4) {
+            passref.current.focus()
+            return false;
+        }
         return true;
     }
     const loginHandler = () => {
         setLoaded(false)
         console.log("loginhandler")
-        if(!userPhone) return
-        if (!validateInpute()) {
-            dispatch(updateInfo({ msg: "All inputs are Required", show: true, infoType: "Error" }));
+        if(!userPhone || !userPassword){
             setLoaded(true)
-            return;
-        };
+            return
+        }
+        // if (validateInpute()) {
+        //     dispatch(updateInfo({ msg: "All inputs are Required", show: true, infoType: "Error" }));
+        //     setLoaded(true)
+        //     return;
+        // };
+        
+       
         axios.post(serverIP + '/login', { user_phone: userPhone, user_pass: userPassword })
             .then(res => {
                 if (res.data.msg === 'Login Success') {
@@ -181,23 +188,35 @@ const LoginScreen = ({ navigation, route }) => {
                     dispatch(userLogin(res.data))
                     setLoaded(true)
                     dispatch(updateInfo({ msg: "Login Success", show: true, infoType: "Success" }));
+                    setshowSplash(false)
                     navigation.replace('Home')
                 }
                 else {
                     setError(res.data.msg)
                     setLoaded(true)
                     dispatch(updateInfo({ msg: res.data.msg, show: true, infoType: "Error" }));
+                    setshowSplash(false)
 
                 }
             }).catch(err => {
                 console.log(err)
                 setLoaded(true)
+                setshowSplash(false)
                 dispatch(updateInfo({ msg: err.toString(), show: true, infoType: "Error" }));
             })
 
 
     }
 
+    if(showSplash){
+        return(
+            <View style={{backgroundColor:'rgb(100,0,200)',flex:1,justifyContent:'center',alignItems:'center'}}>
+                <StatusBar hidden backgroundColor={'rgb(100,0,200)'}/>
+                <ActivityIndicator size={50} color={'white'} />
+                <Text style={{color:'white'}} >Please wait...</Text>
+            </View>
+        )
+    }
     return (
         <View style={styles.main}>
             <StatusBar barStyle={'default'} backgroundColor={'rgb(80,80,255)'} />

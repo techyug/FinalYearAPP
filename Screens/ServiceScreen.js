@@ -60,7 +60,7 @@ const ServiceScreen = (props) => {
                             <Text style={{fontSize:18}}>
                                 {item.ServiceProvideName}
                             </Text>
-                            <Button title='Chat' onPress={() => Alert.alert("Next work is Pending", "we are working on this")} />
+                            <Button title='Chat' onPress={ ()=>navigation.navigate('PersonalChatScreen',{ChatTo:item.ServiceProviderPhone})} />
 
                         </View>
 

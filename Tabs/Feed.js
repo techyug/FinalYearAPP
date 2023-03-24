@@ -3,7 +3,7 @@ import { StyleSheet, FlatList, TouchableOpacity, Image, Text, View, StatusBar, I
 import React, { useEffect, useState } from 'react'
 import axios from 'axios';
 import { serverIP } from '../Constants/IPofBackned';
-import Carousal from 'react-native-snap-carousel'
+
 import { FlatGrid } from 'react-native-super-grid';
 import { useNavigation } from '@react-navigation/native';
 import { useDispatch, useSelector } from 'react-redux';

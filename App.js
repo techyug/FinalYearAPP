@@ -1,5 +1,5 @@
 
-import { Button, Text, View,AppState } from 'react-native';
+import { Button, Text, View,AppState, Animated } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import HomeScreen from './Screens/HomeScreen';
@@ -154,8 +154,30 @@ function App() {
     const info = useSelector(state => state.info)
     const dispatch = useDispatch()
     const msg = info.msg || " No "
+    const fadeAnim = useRef(new Animated.Value(0)).current;
+    const fadeIn = () => {
+      // Will change fadeAnim value to 1 in 5 seconds
+      Animated.timing(fadeAnim, {
+        toValue: 1,
+        duration: 1000,
+        
+        useNativeDriver: true,
+      }).start();
+    };
+  
+    const fadeOut = () => {
+      // Will change fadeAnim value to 0 in 3 seconds
+      Animated.timing(fadeAnim, {
+        toValue: 0,
+        duration: 1000,
+        useNativeDriver: true,
+      }).start();
+    };
+
     if(info.show){
+      fadeIn()
       setTimeout(() => {
+        fadeOut()
         let data = {
           msg: "No new MSG",
           show: false,
@@ -163,21 +185,23 @@ function App() {
         dispatch(updateInfo(data))
       }, 5000);
     }
+   
     return (
       <NavigationContainer>
-        <View style={{ display: info.show ? 'flex' : 'none', flexDirection: 'row', justifyContent: 'space-between', paddingHorizontal: 20,paddingVertical:10, backgroundColor: info.infoType=="Success"?'green':'rgb(200,0,0)' }}>
+        
+        <Animated.View style={{ display: info.show ? 'flex' : 'none', flexDirection: 'row',borderWidth:2,elevation:9,borderColor:'white',position:'absolute',width:'90%',opacity:fadeAnim,alignSelf:'center',borderRadius:10,margin:10,top:10,zIndex:100, justifyContent: 'space-between', paddingHorizontal: 20,paddingVertical:10, backgroundColor: info.infoType=="Success"?'green':'rgb(200,0,0)' }}>
           <Text style={{ color: info.infoType=="Success"?'white':'white' }} >{msg}</Text>
           <Ionicons name='close' size={20} color={'white'} onPress={() => {
             const data = { msg: "",  show: false}
             dispatch(updateInfo(data))
           }} />
         
-        </View>
+        </Animated.View> 
         <Stack.Navigator initialRouteName='Login'>
           <Stack.Screen options={{ headerShown: false ,animation:'slide_from_left'}} name="Login" component={LoginScreen} />
           <Stack.Screen options={{ title: 'Reset Password'}} name="ForgotPass" component={ForgotPassScreen} />
           <Stack.Screen name='Register' options={{ headerShown: false, title: 'Regiter ',animation:'slide_from_right' }} component={RegisterScreen} />
-          <Stack.Screen name="Home" options={{ headerShown: false,animation:'slide_from_bottom' }} component={HomeScreen} />
+          <Stack.Screen name="Home" options={{ headerShown: false,animation:'default' }} component={HomeScreen} />
           <Stack.Screen name='Service' component={ServiceScreen} />
           <Stack.Screen name='ProviderShowCase' component={ServiceProviderShowcase}/>
           <Stack.Screen name='AddServiceFromScreen' options={{animation:'slide_from_right',title:'Add Services'}} component={AddServiceFormScreen} />

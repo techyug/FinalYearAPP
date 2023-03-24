@@ -1,5 +1,5 @@
 import { View, Text, Image, ScrollView, Button, TextInput, FlatList } from 'react-native'
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { useNavigation } from '@react-navigation/native'
 
 import { defaultAvatarImage } from '../Constants/Gconstants';
@@ -10,7 +10,7 @@ import { connectToSocket } from '../Constants/GlobalSocket';
 import { io } from 'socket.io-client';
 import { useSelector } from 'react-redux';
 import { useDispatch } from 'react-redux';
-import { updateMessages } from '../Redux/actions';
+import { newMessageToRedux, updateMessages } from '../Redux/actions';
 import { getISTLocal } from '../Constants/Async_functions';
 
 
@@ -21,20 +21,33 @@ const ServiceProviderShowcase = (props) => {
     const [chatboxHeight, setchatboxHeight] = useState(60)
     const p = { "CreatedAt": "2023-02-28T15:31:40.000Z", "ProviderStatus": "New Provider", "ServiceProvideName": "Kaushalendra ", "ServiceProviderEmail": "Ttststys@gmail.com", "ServiceProviderId": 1, "ServiceProviderIdinMap": 1, "ServiceProviderImage": null, "ServiceProviderPassword": "54321", "ServiceProviderPhone": "9696567462", "service_description": "All type of Camera operators", "service_id": 1, "service_img": "https://img.freepik.com/free-vector/videographer-concept-illustration_114360-1439.jpg", "service_title": "Camera man", "super_cat_id": 2 }
     const ProviderData = props.route.params.ProviderData
-    const allmessages = useSelector(s => s.messages)
-    const messages =allmessages.filter(i=>i.toPhone==ProviderData.ServiceProviderPhone ||  i.fromPhone==ProviderData.ServiceProviderPhone)
-    console.log("alll:",allmessages)
-    console.log("ppppp:",messages)
+    //const allmessages = useSelector(s => s.messages)
+    // const messages =allmessages.filter(i=>i.toPhone==ProviderData.ServiceProviderPhone ||  i.fromPhone==ProviderData.ServiceProviderPhone)
+    // console.log("alll:",allmessages)
+    // console.log("ppppp:",messages)
     const [chatBox, setChabox] = useState("");
     var socket = connectToSocket();
+    const messages1 = useSelector(s=>s.messages1);
+    const messages = messages1.get(ProviderData.ServiceProviderPhone)||[];
+    //console.log("message 1",messages1.get(ProviderData.ServiceProviderPhone))
+    const flatListRef = useRef(null);
 
     useEffect(() => {
         navigation.setOptions({ title: ProviderData.ServiceProvideName })
+        if(messages.length)
+        flatListRef.current.scrollToEnd({ animated: true });
+
 
         return () => {
 
         }
     }, [])
+    
+   useEffect(()=>{
+    if(messages.length)
+   flatListRef.current.scrollToEnd({ animated: true });
+
+   },[messages.length])
     const dispatch = useDispatch()
   let msg  = {"fromPhone": "7080784497", "msg": "Ffff", "senderName": "Yogendsingh", "sentAt": "2023-03-13T15:53:19.100Z", "toPhone": "8429582215"}
     const handleSendMessage = () => {
@@ -47,17 +60,16 @@ const ServiceProviderShowcase = (props) => {
                 toPhone: ProviderData.ServiceProviderPhone,
                 msg: chatBox
             }, (d) => {
-
-                dispatch(updateMessages([...allmessages, {
-                    fromPhone: userData.user_phone,
+                let f = {
+                    fromPhone: "0",
                     sentAt: getISTLocal().toString(),
                     receivedAt : "0",
                     receiverName:ProviderData.ServiceProvideName,
                     senderName: userData.user_name,
                     toPhone: ProviderData.ServiceProviderPhone,
                     msg: chatBox
-                }]))
-                
+                }
+                dispatch(newMessageToRedux(f))
                 console.log("call back", d)
             })
             setChabox('');
@@ -68,12 +80,15 @@ const ServiceProviderShowcase = (props) => {
         if (chatboxHeight == 300) {
             setchatboxHeight(60);
         } else setchatboxHeight(300)
+        if(messages.length)
+        flatListRef.current.scrollToEnd({ animated: true });
+
 
     }
     const ProviderNameBox = () =>
         <View style={{ flexDirection: 'row', justifyContent: 'space-between', paddingHorizontal: 10, marginTop: 5, paddingVertical: 10, alignItems: 'center', backgroundColor: 'white', borderRadius: 20, elevation: 2, }}>
             <View style={{ flexDirection: 'row', justifyContent: 'flex-start' }}>
-                <Image style={{ borderRadius: 30, borderColor: 'red', borderWidth: 2 }} source={{ uri: p.ServiceProviderImage || defaultAvatarImage, height: 60, width: 60 }} />
+                <Image style={{ borderRadius: 30, borderColor: 'red', borderWidth: 2 }} source={{ uri: ProviderData.ServiceProviderImage || defaultAvatarImage, height: 60, width: 60 }} />
                 <View style={{ justifyContent: "space-evenly", marginLeft: 10 }}>
                     <Text style={{ fontWeight: 'bold' }}>{ProviderData.ServiceProvideName}</Text>
                     <Text style={{ backgroundColor: 'blue', color: 'white', borderRadius: 10, textAlign: 'center', padding: 3, fontSize: 12 }}>{ProviderData.service_title}</Text>
@@ -88,7 +103,7 @@ const ServiceProviderShowcase = (props) => {
         <View style={{ flex: 1, paddingHorizontal: 0, backgroundColor: 'rgb(230,230,230)' }}>
             <ScrollView contentContainerStyle={{ padding: 15, paddingTop: 0 }} >
 
-                <Image source={{ uri: p.service_img, height: 200 }} />
+                <Image source={{ uri: ProviderData.service_img, height: 200 }} />
                 <ProviderNameBox />
                 <Text style={{ fontSize: 18 }} >Reviews</Text>
                 <View style={{ marginVertical: 5 }}>
@@ -138,9 +153,9 @@ const ServiceProviderShowcase = (props) => {
                     <Button title='Send Booking request' color={'green'} />
                 </View>
                 {
-                    chatboxHeight != 60 &&
-                    <FlatList data={messages} style={{paddingHorizontal:20}}  renderItem={({item,index})=>(
-                        <View style={{backgroundColor:'white',padding:10,borderRadius:5,alignSelf:item.toPhone!==userData.user_phone?'flex-end':'flex-start',margin:2}} >
+                     
+                    <FlatList data={messages} ref={flatListRef} style={{paddingHorizontal:20,display:chatboxHeight != 60?'flex':'flex'}}  renderItem={({item,index})=>(
+                        <View style={{backgroundColor:'white',padding:10,borderRadius:5,alignSelf:item.toPhone.length<10 ?'flex-start':'flex-end',margin:2}} >
                             <Text>
                                 {item.msg}
                             </Text>
@@ -151,9 +166,9 @@ const ServiceProviderShowcase = (props) => {
 
                 {
                     chatboxHeight != 60 &&
-                    <View style={{ backgroundColor: 'white' }}>
-
-                        <Input placeholder='Write message' value={chatBox} onSubmitEditing={handleSendMessage} onChangeText={t => setChabox(t)} style={{ paddingRight: 20, borderWidth: 0 }} containerStyle={{ paddingHorizontal: 20, borderBottomWidth: 0 }} rightIcon={() => (<Ionicons onPress={handleSendMessage} name='send' style={{}} size={25} color={'green'} />)} />
+                    <View style={{ backgroundColor: 'white',paddingHorizontal:10 ,flexDirection:'row',justifyContent:'space-between',alignItems:'center'}}>
+                        <TextInput  placeholder='Write message' value={chatBox} onSubmitEditing={handleSendMessage} onChangeText={t => setChabox(t)} style={{ paddingRight: 20,fontSize:18, borderWidth: 1,flex:1,marginHorizontal:10,backgroundColor:'lightgray',borderRadius:10,padding:10,margin:5}}  />
+                        <Ionicons onPress={handleSendMessage} disabled={!chatBox.length} name='send' style={{backgroundColor:'lightgray',borderRadius:25,padding:10}} size={30} color={chatBox.length?'blue':'white'} />
                     </View>
                 }
             </View>

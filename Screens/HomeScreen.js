@@ -12,18 +12,29 @@ import * as Notifications from 'expo-notifications';
 import { callApi, getISTLocal, showLocalNotification } from '../Constants/Async_functions';
 import { connectToSocket } from '../Constants/GlobalSocket';
 import { serverIP } from '../Constants/IPofBackned';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { io } from 'socket.io-client';
-import { updateMessages } from '../Redux/actions';
+
+import { newMessageToRedux, updateMessages } from '../Redux/actions';
 
 
 const Tab = createMaterialBottomTabNavigator();
 
 
-export default function HomeScreen() {
 
+
+
+
+export default function HomeScreen() {
+    
     const userData = useSelector((state => state.userData))
     const messages = useSelector((state=>state.messages))
+    const messages1 = useSelector((state)=>state.messages1)||new Map();
+    
+   
+    
+       // const [totalMessages,setTotalMessages] = useState(0);
+
     const dispatch = useDispatch();
 
     var socket = connectToSocket()
@@ -34,14 +45,25 @@ export default function HomeScreen() {
             console.log(ack)
 
         })
+        
+        // socket.on("connect", () => {
+        //     console.log("connected my socket id is ",socket.id); // x8WIv7-mJelg7on_ALbx
+        //     socket.emit('im-active', { token: userData.token }, ack => {
+        //         console.log(ack)
+    
+        //     })
+        //   });
+
         socket.on('new-message', (data) => {
             console.log("new message received")
             data.receivedAt = getISTLocal().toString();
-            
+            console.log(data)
             console.log("messages before dispatch",messages)
            // messages.push(data)
           //  dispatch(updateMessages(messages))
           dispatch(updateMessages([...messages,data]))
+          data.toPhone = "";
+            dispatch(newMessageToRedux(data))
             showLocalNotification(`${data.senderName}`, `${data.msg}`)
         })
       
@@ -56,7 +78,7 @@ export default function HomeScreen() {
             >
                 <Tab.Screen options={{ tabBarIcon: 'home', title: 'Home' }} name="Feed" component={Feed} />
                 <Tab.Screen options={{ tabBarIcon: 'cloud-search' }} name="Search" component={SearchTab} />
-                <Tab.Screen options={{ tabBarIcon: 'account', title: 'Profile', tabBarBadge: messages.length }} name="Profile" component={Proflletab} />
+                <Tab.Screen options={{ tabBarIcon: 'account', title: 'Profile', tabBarBadge: messages1.size}} name="Profile" component={Proflletab} />
             </Tab.Navigator >
 
         );
@@ -65,7 +87,7 @@ export default function HomeScreen() {
         <Tab.Navigator >
             <Tab.Screen options={{ tabBarIcon: 'view-dashboard', title: 'Dashbord', }} name="Dashbord" component={ServiceProviderDashBord} />
             <Tab.Screen options={{ tabBarIcon: 'book-clock-outline', title: 'Bookings' }} name="Bookings" component={MyBookings} />
-            <Tab.Screen options={{ tabBarIcon: 'chat-outline', title: 'Conversation', tabBarBadge: messages.length }} name="Conversation" component={Conversations} />
+            <Tab.Screen options={{ tabBarIcon: 'chat-outline', title: 'Conversation', tabBarBadge: messages1.size }} name="Conversation" component={Conversations} />
         </Tab.Navigator>
     )
 

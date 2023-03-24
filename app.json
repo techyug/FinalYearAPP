@@ -1,10 +1,10 @@
 {
   "expo": {
     "name": "HelpMeet",
-    "slug": "FinalYearAPP",
+    "slug": "helpmeet",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/1024.png",
+    "icon": "./assets/ic_launcher.png",
     "userInterfaceStyle": "light",
     "splash": {
       "image": "./assets/splash.png",
@@ -21,19 +21,24 @@
       "supportsTablet": true
     },
     "android": {
-      "icon":"./assets/1024.png",
+      "icon": "./assets/ic_launcher.png",
       "adaptiveIcon": {
-        "foregroundImage": "./assets/1024.png",
-        "backgroundColor": "#FFFFFF"
+        "foregroundImage": "./assets/ic_launcher.png",
+        "backgroundColor": "#ffffff"
       },
-      "package": "com.yogendra_0.FinalYearAPP"
+      "package": "com.yogendra_0.FinalYearAPP",
+      "permissions": [
+        "android.permission.ACCESS_COARSE_LOCATION",
+        "android.permission.ACCESS_FINE_LOCATION",
+        "android.permission.FOREGROUND_SERVICE"
+      ]
     },
     "web": {
       "favicon": "./assets/favicon.png"
     },
     "extra": {
       "eas": {
-        "projectId": "2426d84a-8276-4c1e-9374-cb1e77d73a66"
+        "projectId": "f55ba507-a164-4e33-9ec4-06e752073a14"
       }
     },
     "plugins": [
@@ -42,9 +47,8 @@
         {
           "locationAlwaysAndWhenInUsePermission": "Allow HelpMeet to use your location."
         }
-      
-        
       ]
-    ]
+    ],
+    "owner": "yogendra_1"
   }
 }

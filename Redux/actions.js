@@ -1,4 +1,4 @@
-import { ADDITION, MESSAGE_UPDATE, ONLINE_USERLIST_CHANGED, UPDATE_INFO, USER_LOGIN, USER_LOGOUT } from "./actionType";
+import { ADDITION, INSERT_NEW_MESSAGE, MESSAGE_UPDATE, ONLINE_USERLIST_CHANGED, UPDATE_INFO, USER_LOGIN, USER_LOGOUT } from "./actionType";
 import { SUBSTACTION } from "./actionType";
 export function addition() {
     return {
@@ -35,5 +35,11 @@ export function updateInfo(infoData){
     return {
         type:UPDATE_INFO,
         newinfoData:infoData
+    }
+}
+export function newMessageToRedux(newMessage = {msg:"default message",toPhone:"287382242",fromPhone:"283789242"}){
+    return {
+        type:INSERT_NEW_MESSAGE,
+        newMessage:newMessage
     }
 }
