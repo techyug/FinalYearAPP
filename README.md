@@ -8,9 +8,10 @@ npm start
 
 
 Here are some screenshots of our app:
+<p align="center">
+  <img src="/Screenshots/Login.png" width="220" height="240" />
+</p>
 
-### Login Screen
-![Login Screen](Screenshots/Login.png)
 
 ### Provider List
 ![Provider List](Screenshots/ProviderList.png)
