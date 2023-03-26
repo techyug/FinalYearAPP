@@ -125,10 +125,7 @@ const ServiceProviderShowcase = (props) => {
                     <View style={{ elevation: 5, backgroundColor: 'white', padding: 10, borderBottomLeftRadius: 20, borderBottomRightRadius: 20, borderTopRightRadius: 20 }}>
                         <Text>this is  a big review to this provide i am ipressd this is  a big review to this provide i am ipressd </Text>
                         <ScrollView horizontal scrollEnabled={true} contentContainerStyle={{ padding: 10 }}>
-                            <Image source={{ uri: defaultAvatarImage, width: 100, height: 100 }} style={{ margin: 5 }} />
-                            <Image source={{ uri: defaultAvatarImage, width: 100, height: 100 }} style={{ margin: 5 }} />
-                            <Image source={{ uri: defaultAvatarImage, width: 100, height: 100 }} style={{ margin: 5 }} />
-                            <Image source={{ uri: defaultAvatarImage, width: 100, height: 100 }} style={{ margin: 5 }} />
+                            
                         </ScrollView>
                     </View>
                 </View>
@@ -145,10 +142,7 @@ const ServiceProviderShowcase = (props) => {
                     <View style={{ elevation: 5, backgroundColor: 'white', padding: 10, borderBottomLeftRadius: 20, borderBottomRightRadius: 20, borderTopRightRadius: 20 }}>
                         <Text>this is  a big review to this provide i am ipressd this is  a big review to this provide i am ipressd </Text>
                         <ScrollView horizontal scrollEnabled={true} contentContainerStyle={{ paddingLeft: 10 }}>
-                            <Image source={{ uri: defaultAvatarImage, width: 100, height: 100 }} style={{ margin: 5 }} />
-                            <Image source={{ uri: defaultAvatarImage, width: 100, height: 100 }} style={{ margin: 5 }} />
-                            <Image source={{ uri: defaultAvatarImage, width: 100, height: 100 }} style={{ margin: 5 }} />
-                            <Image source={{ uri: defaultAvatarImage, width: 100, height: 100 }} style={{ margin: 5 }} />
+                     
                         </ScrollView>
                     </View>
                 </View>

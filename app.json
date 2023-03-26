@@ -7,7 +7,7 @@
     "icon": "./assets/ic_launcher.png",
     "userInterfaceStyle": "light",
     "splash": {
-      "image": "./assets/splash.png",
+      "image": "./assets/ic_launcher.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
@@ -26,7 +26,7 @@
         "foregroundImage": "./assets/ic_launcher.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.yogendra_0.FinalYearAPP",
+      "package": "com.yogendra_0.helpmeet",
       "permissions": [
         "android.permission.ACCESS_COARSE_LOCATION",
         "android.permission.ACCESS_FINE_LOCATION",
