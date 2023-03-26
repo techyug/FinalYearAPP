@@ -7,6 +7,9 @@ import { newMessageToRedux } from '../Redux/actions';
 import { getISTLocal } from '../Constants/Async_functions';
 import { Input } from 'react-native-elements';
 import { Ionicons } from '@expo/vector-icons';
+import  DbOperations from '../LocalStorage/index'
+import { userRoleType } from '../Constants/Gconstants';
+
 
 const PersonalChatScreen = (props) => {
     
@@ -19,6 +22,8 @@ const PersonalChatScreen = (props) => {
     const Allmessages = useSelector(s=>s.messages1)
     const messages =Allmessages.get(chatToData)||[]
     const navigation = useNavigation()
+    const commonUserData = useSelector(s=>s.commonUserData)
+    
 
     let myName = "";
     let MyPhone = '';
@@ -32,35 +37,40 @@ const PersonalChatScreen = (props) => {
    
     useEffect(() => {
         navigation.setOptions({
-            title: messages[0]?messages[0].senderName:"Chat "
+            title: messages[0]?messages[0].senderName:"Chat",
         })
+       
     }, [])
     useEffect(()=>{
         if(messages && messages.length)
        flatListRef.current.scrollToEnd({ animated: true });
-    
        },[messages.length])
 
     const handleSendMessage = () => {
         if (chatBox.length) {
             socket.emit('new-message', {
                 fromPhone: MyPhone,
-                sentAt: new Date(),
+                sentAt: getISTLocal().toString(),
                 senderName: myName,
+            
+                receiverName:"some name",
                 toPhone: chatToData,
                 msg: chatBox
             }, (d) => {
                 let f = {
-                    fromPhone: "0",
-                    sentAt: getISTLocal().toString(),
-                    receivedAt : "0",
+                    fromPhone: commonUserData.userPhone,
+                    timestamp:getISTLocal().toString(),
                     receiverName:"dvds",
                     senderName: myName,
                     toPhone: chatToData,
-                    msg: chatBox
+                    msg: chatBox,
+                    amIsender:true,
+                    messageId:d.messageId,
+                    statusCode:d.statusCode
                 }
                 
                 dispatch(newMessageToRedux(f))
+                DbOperations.insertMessageToTable(commonUserData.role,d.messageId,myName,MyPhone,chatToData,f.receiverName,chatBox,true,d.statusCode);
                 console.log("call back", d)
                 if(messages.length)
                 flatListRef.current.scrollToEnd({ animated: true });
@@ -70,13 +80,13 @@ const PersonalChatScreen = (props) => {
         } else return
     }
     return (
-        <View style={{flex:1}}>
+        <View style={{flex:1, backgroundColor:"gray"}}>
             <FlatList
                 data={messages}
                 ref={flatListRef}
                 renderItem={({ item, index }) => (
-                    <View style={{ backgroundColor: 'white', padding: 10,maxWidth:'75%', borderRadius: 5, alignSelf:item.toPhone.length<10 ?'flex-start':'flex-end', margin: 2 }} >
-                        <Text>
+                    <View style={{ backgroundColor: item.toPhone.length<10?'lightblue':'pink', padding: 10,maxWidth:'75%', borderRadius: 5, alignSelf:!item.amIsender ?'flex-start':'flex-end', margin: 2 }} >
+                        <Text >
                             {item.msg}
                         </Text>
                     </View>

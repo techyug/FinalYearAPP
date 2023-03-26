@@ -1,7 +1,6 @@
-import { StyleSheet, FlatList, TouchableOpacity, Image, Text, View, StatusBar, ImageBackground, ScrollView, RefreshControl, Pressable, Alert } from 'react-native'
+import { StyleSheet, Image, Text, View, StatusBar, ImageBackground, RefreshControl, Pressable, Alert } from 'react-native'
 
 import React, { useEffect, useState } from 'react'
-import axios from 'axios';
 import { serverIP } from '../Constants/IPofBackned';
 
 import { FlatGrid } from 'react-native-super-grid';
@@ -15,7 +14,7 @@ const styles = StyleSheet.create({
         flex: 1,
         paddingTop: 10,
         paddingHorizontal: 20,
-        backgroundColor: 'white'
+        backgroundColor: 'rgb(0, 200, 160)'
 
     }
     ,
@@ -81,18 +80,6 @@ const Feed = () => {
                 dispatch(updateInfo({ msg: err.toString(), show: true, infoType: "Error" }));
             })
 
-        // axios.get(serverIP + '/services/')
-        //     .then(res => {
-        //         setCategoryData(res.data);
-        //         setloaded(true)
-
-        //     }).catch(err => {
-
-        //         console.log(err);
-        //         setloaded(true)
-        //         dispatch(updateInfo({ msg: err.toString(), show: true, infoType: "Error" }));
-        //     })
-
     }, [loaded])
 
     const onRefresh = () => {
@@ -118,7 +105,7 @@ const Feed = () => {
         </>
     return (
         <View style={styles.feedScreen} >
-            <StatusBar barStyle={'default'} backgroundColor={'rgb(200,0,100)'} />
+            <StatusBar barStyle={'default'}  backgroundColor={'rgb(200,0,100)'} />
             <FlatGrid
                 ListHeaderComponent={ListHeader}
                 itemDimension={100}

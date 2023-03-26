@@ -1,4 +1,4 @@
-import { ADDITION, INSERT_NEW_MESSAGE, MESSAGE_UPDATE, ONLINE_USERLIST_CHANGED, UPDATE_INFO, USER_LOGIN, USER_LOGOUT } from "./actionType";
+import { ADDITION, ALL_MESSAGES_FROM_SQLITE_TO_REDUX, INSERT_NEW_MESSAGE, MESSAGE_UPDATE, ONLINE_USERLIST_CHANGED, UPDATE_INFO, USER_LOGIN, USER_LOGOUT } from "./actionType";
 import { SUBSTACTION } from "./actionType";
 export function addition() {
     return {
@@ -41,5 +41,11 @@ export function newMessageToRedux(newMessage = {msg:"default message",toPhone:"2
     return {
         type:INSERT_NEW_MESSAGE,
         newMessage:newMessage
+    }
+}
+export function messagesFromSQLiteToRedux(allMessagesArray=[]){
+    return {
+        type:ALL_MESSAGES_FROM_SQLITE_TO_REDUX,
+        allMessagesArray
     }
 }

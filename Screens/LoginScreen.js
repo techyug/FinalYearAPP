@@ -170,21 +170,13 @@ const LoginScreen = ({ navigation, route }) => {
             setLoaded(true)
             return
         }
-        // if (validateInpute()) {
-        //     dispatch(updateInfo({ msg: "All inputs are Required", show: true, infoType: "Error" }));
-        //     setLoaded(true)
-        //     return;
-        // };
-        
-       
         axios.post(serverIP + '/login', { user_phone: userPhone, user_pass: userPassword })
             .then(res => {
                 if (res.data.msg === 'Login Success') {
                     storeData(res.data);
-
-                    console.log(res.data)
                     delete res.data.ServiceProviderPassword;
-                    console.log(res.data)
+                    delete res.data.user_pass
+                    
                     dispatch(userLogin(res.data))
                     setLoaded(true)
                     dispatch(updateInfo({ msg: "Login Success", show: true, infoType: "Success" }));
@@ -199,7 +191,7 @@ const LoginScreen = ({ navigation, route }) => {
 
                 }
             }).catch(err => {
-                console.log(err)
+                console.log("login err",err)
                 setLoaded(true)
                 setshowSplash(false)
                 dispatch(updateInfo({ msg: err.toString(), show: true, infoType: "Error" }));

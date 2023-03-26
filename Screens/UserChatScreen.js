@@ -7,6 +7,7 @@ import { useNavigation } from '@react-navigation/native';
 const UserChatScreen = () => {
   const messages1 = useSelector((state)=>state.messages1)||new Map();
   const messages = Array.from(messages1)
+  
   const navigation = useNavigation()
 
   return (
@@ -18,7 +19,6 @@ const UserChatScreen = () => {
       <FlatList
         data={messages}
         renderItem={({ item, index }) => (
-          
           <Pressable key={item[0]} onPress={()=>navigation.navigate('PersonalChatScreen',{ChatTo:item[0]})}  style={{ flexDirection: 'row' ,padding:5,paddingHorizontal:10,alignItems:'center',backgroundColor:'lightgray'}}>
             <Image source={{ uri: defaultAvatarImage, width: 50, height: 50, }} style={{borderRadius:25,alignSelf:'center'}} />
             <View style={{ flex: 1 ,paddingHorizontal:10}}>

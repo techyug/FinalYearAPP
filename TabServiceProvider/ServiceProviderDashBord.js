@@ -18,6 +18,8 @@ const ServiceProviderDashBord = () => {
   const dispatch = useDispatch();
   const userData = useSelector(state => state.userData)
   const Messages = useSelector(state=>state.messages)
+ 
+  
   const [dataofServicesbyapi,setdataofServicesbyapi] = useState([])
   const [loadedAssignedServices,setloadedAssignedServices] = useState(false)
   const [profileOpen, setprofileOpen] = useState(false)
@@ -37,12 +39,12 @@ const ServiceProviderDashBord = () => {
   }
  
   useEffect(() => {
-    callApi(serverIP+'/messages-of-provider/'+userData.ServiceProviderId,'GET').then((r)=>{
-      dispatch(updateMessages(r.data))
+    // callApi(serverIP+'/messages-of-provider/'+userData.ServiceProviderId,'GET').then((r)=>{
+    //   dispatch(updateMessages(r.data))
       
-    }).catch(e=>{
+    // }).catch(e=>{
       
-    })
+    // })
     // Axios.get( serverIP+'/messages-of-provider/'+userData.ServiceProviderId).then((r)=>{
     //   dispatch(updateMessages(r.data))
       
@@ -182,22 +184,6 @@ const ServiceProviderDashBord = () => {
       <StatusBar barStyle={'default'} backgroundColor={'rgb(80,80,255)'} />
       <View style={{ backgroundColor:'white',borderRadius:10,elevation:8,flexDirection:'row',justifyContent:'space-between',padding:10,borderBottomWidth:1,borderColor:'lightgray' }}>
        
-          {/* <View style={{ flexDirection: 'row', justifyContent: 'space-around', alignItems: 'center', width: '100%' }} >
-            <Ionicons name={profileOpen ? 'arrow-back-sharp' : 'md-code-download'} size={32} color={'black'} onPress={() => setprofileOpen(!profileOpen)} />
-           
-          </View>
-          
-           
-            <View style={{ justifyContent: 'center', alignItems: 'center', }} >
-              <Text>{userData.ServiceProvideName} </Text>
-              <Text>{userData.ServiceProviderPhone}</Text>
-              <Text>{userData.ServiceProviderEmail} </Text>
-              <Pressable style={{ backgroundColor: 'red', padding: 10, borderRadius: 10, flexDirection: 'row', justifyContent: 'space-evenly', width: 150, alignItems: 'center', elevation: 8, borderWidth: 2, borderColor: 'white' }} onPress={userLogoutConstant}>
-                <Text style={{ color: 'white', fontSize: 18 }}>Logout</Text>
-                <Ionicons name='log-out' size={30} color={'white'} />
-              </Pressable>
-            </View>
-           */}
            <Text style={{color:'red',fontSize:35,fontWeight:'bold'}} >HelpMeet</Text>
             <Pressable onPress={() => {
               navigation.navigate('ProviderProfileScreen')

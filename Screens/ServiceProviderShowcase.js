@@ -12,6 +12,7 @@ import { useSelector } from 'react-redux';
 import { useDispatch } from 'react-redux';
 import { newMessageToRedux, updateMessages } from '../Redux/actions';
 import { getISTLocal } from '../Constants/Async_functions';
+import DbOperations from '../LocalStorage/index'
 
 
 const ServiceProviderShowcase = (props) => {
@@ -31,7 +32,7 @@ const ServiceProviderShowcase = (props) => {
     const messages = messages1.get(ProviderData.ServiceProviderPhone)||[];
     //console.log("message 1",messages1.get(ProviderData.ServiceProviderPhone))
     const flatListRef = useRef(null);
-
+    const commonUserData = useSelector(state=>state.commonUserData)
     useEffect(() => {
         navigation.setOptions({ title: ProviderData.ServiceProvideName })
         if(messages.length)
@@ -57,19 +58,24 @@ const ServiceProviderShowcase = (props) => {
                 fromPhone: userData.user_phone,
                 sentAt: new Date(),
                 senderName: userData.user_name,
+                receiverName:ProviderData.ServiceProvideName,
                 toPhone: ProviderData.ServiceProviderPhone,
                 msg: chatBox
             }, (d) => {
                 let f = {
-                    fromPhone: "0",
-                    sentAt: getISTLocal().toString(),
-                    receivedAt : "0",
+                    fromPhone: commonUserData.userPhone,
+                
+                    timestamp:getISTLocal().toString(),
                     receiverName:ProviderData.ServiceProvideName,
                     senderName: userData.user_name,
                     toPhone: ProviderData.ServiceProviderPhone,
-                    msg: chatBox
+                    msg: chatBox,
+                    amIsender :true
                 }
+                
                 dispatch(newMessageToRedux(f))
+                DbOperations.insertMessageToTable(commonUserData.role,d.messageId,commonUserData.userName,commonUserData.userPhone,f.toPhone,f.receiverName,chatBox,true,d.statusCode);
+
                 console.log("call back", d)
             })
             setChabox('');
@@ -155,7 +161,7 @@ const ServiceProviderShowcase = (props) => {
                 {
                      
                     <FlatList data={messages} ref={flatListRef} style={{paddingHorizontal:20,display:chatboxHeight != 60?'flex':'flex'}}  renderItem={({item,index})=>(
-                        <View style={{backgroundColor:'white',padding:10,borderRadius:5,alignSelf:item.toPhone.length<10 ?'flex-start':'flex-end',margin:2}} >
+                        <View style={{backgroundColor:'white',padding:10,borderRadius:5,alignSelf:!item.amIsender ?'flex-start':'flex-end',margin:2}} >
                             <Text>
                                 {item.msg}
                             </Text>
