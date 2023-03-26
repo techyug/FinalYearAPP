@@ -10,25 +10,25 @@ npm start
 Here are some screenshots of our app:
 
 ### Login Screen
-![Login Screen](screenshots/Login.png)
+![Login Screen](Screenshots/Login.png)
 
 ### Provider List
-![Provider List](screenshots/ProviderList.png)
+![Provider List](Screenshots/ProviderList.png)
 
 ### Provider Showcase
-![Provider Showcase](screenshots/ProviderShocase.png)
+![Provider Showcase](Screenshots/ProviderShocase.png)
 
 ### User Home Screen
-![User Home Screen](screenshots/User_HomeScreen.png)
+![User Home Screen](Screenshots/User_HomeScreen.png)
 
 ### Add Service Screen
-![Add Service Screen](screenshots/addservice.png)
+![Add Service Screen](Screenshots/addservice.png)
 
 ### Provider Screen
-![Provider Screen](screenshots/provider.png)
+![Provider Screen](Screenshots/provider.png)
 
 ### Signup Screen
-![Signup Screen](screenshots/signup.png)
+![Signup Screen](Screenshots/signup.png)
 
 ### User Profile Screen
-![User Profile Screen](screenshots/userProfile.png)
+![User Profile Screen](Screenshots/userProfile.png)
