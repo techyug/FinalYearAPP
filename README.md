@@ -9,12 +9,12 @@ npm start
 
 Here are some screenshots of our app:
 <p align="center">
-  <img src="Screenshots/ProviderList.png" width="220" height="240" />
+  <img src="Screenshots/ProviderList.png"  height="270" />
 </p>
 
 
 ### Provider List
-![Provider List](Screenshots/ProviderList.png)
+![Provider List] <img src="Screenshots/ProviderShocase.png"  height="270" />
 
 ### Provider Showcase
 ![Provider Showcase](Screenshots/ProviderShocase.png)
