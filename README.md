@@ -13,8 +13,6 @@ Here are some screenshots of our app:
 </p>
 
 
-### Provider List
-![Provider List] <img src="Screenshots/ProviderShocase.png"  height="270" />
 
 ### Provider Showcase
 ![Provider Showcase](Screenshots/ProviderShocase.png)
