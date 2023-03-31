@@ -9,7 +9,7 @@ npm start
 
 Here are some screenshots of our app:
 <p align="center">
-  <img src="https://cdn-icons-png.flaticon.com/512/1581/1581942.png" width="220" height="240" />
+  <img src="Screenshots/ProviderList.png" width="220" height="240" />
 </p>
 
 
