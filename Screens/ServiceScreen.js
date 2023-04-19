@@ -7,6 +7,7 @@ import { defaultAvatarImage } from '../Constants/Gconstants';
 import { useDispatch } from 'react-redux';
 import { updateInfo } from '../Redux/actions';
 import * as Notifications from 'expo-notifications';
+import { Ionicons } from '@expo/vector-icons';
 
 const ServiceScreen = (props) => {
     const navigation = useNavigation();
@@ -54,13 +55,14 @@ const ServiceScreen = (props) => {
                         <View style={{ flexDirection: 'row', justifyContent: 'space-between', padding: 10, borderWidth: 0, margin: 2, backgroundColor: 'rgba(0,0,0,0.1)', borderRadius: 10 ,height:80,alignItems:'center'}}>
                             
                             <Image
-                                source={{ uri: item.ServiceProviderImage || defaultAvatarImage }}
+                                source={{ uri: item.ServiceProviderImage?serverIP+ item.ServiceProviderImage : defaultAvatarImage }}
                                 style={{ width: 60, height: '100%', borderRadius: 10 }}
                             />
                             <Text style={{fontSize:18}}>
                                 {item.ServiceProvideName}
                             </Text>
-                            <Button title='Chat' onPress={ ()=>navigation.navigate('PersonalChatScreen',{ChatTo:item.ServiceProviderPhone})} />
+                            <Ionicons name='chatbox-ellipses-outline' color={"blue"} onPress={ ()=>navigation.navigate('PersonalChatScreen',{ChatTo:item.ServiceProviderPhone})} size={30}/>
+                            
 
                         </View>
 

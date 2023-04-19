@@ -1,18 +1,22 @@
-import { Text, View, Image, Pressable, FlatList, ScrollView, RefreshControl } from 'react-native'
+import { Text, View, Pressable, FlatList, ScrollView, RefreshControl ,Button} from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
 import { updateInfo, userLogout } from '../Redux/actions';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Ionicons from '@expo/vector-icons/Ionicons';
-import Axios from 'axios'
+
+import * as ImagePicker from 'expo-image-picker';
 import { serverIP } from '../Constants/IPofBackned';
 import { useNavigation } from '@react-navigation/native';
 import { defaultAvatarImage } from '../Constants/Gconstants';
 import { ActivityIndicator } from 'react-native-paper';
 import { callApi } from '../Constants/Async_functions';
 import { connectToSocket } from '../Constants/GlobalSocket';
+import { Image, Skeleton } from '@rneui/base';
 
 const ProviderProfileScreen = (props) => {
+    const [image, setImage] = useState("");
+    const [imageResult, setImageResult] = useState(null)
     const userData = useSelector(state => state.userData)
     const [dataofServicesbyapi, setdataofServicesbyapi] = useState([])
     const [loadedAssignedServices, setloadedAssignedServices] = useState(false)
@@ -21,8 +25,8 @@ const ProviderProfileScreen = (props) => {
     console.log(props.route.params)
     const socket = connectToSocket()
     const userLogoutConstant = () => {
-        
-        socket.emit('im-not-active',{token:userData.token})
+
+        socket.emit('im-not-active', { token: userData.token })
         socket.disconnect();
         dispatch(userLogout())
         AsyncStorage.removeItem('@userData');
@@ -44,6 +48,44 @@ const ProviderProfileScreen = (props) => {
         }
 
     }, [])
+    const handleImageUpload = () => {
+        const formData = new FormData();
+        const uriParts = imageResult.assets[0].uri.split('.');
+        const fileType = uriParts[uriParts.length - 1];
+        const fileName = `image-${Date.now()}.${fileType}`;
+        formData.append('image', {
+            uri: imageResult.assets[0].uri,
+            type: 'image/jpeg',
+            name: fileName
+
+        });
+
+        callApi(serverIP + '/profile_picture', 'POST', formData).then(r => {
+            console.log(r.data)
+            userData.ServiceProviderImage = r.data.imageUrl
+            setImage("")
+
+        }).catch(e => {
+            console.log(e)
+        })
+    }
+
+    const pickImage = async () => {
+        // No permissions request is necessary for launching the image library
+        let result = await ImagePicker.launchImageLibraryAsync({
+            mediaTypes: ImagePicker.MediaTypeOptions.Images,
+            allowsEditing: true,
+            aspect: [1, 1],
+            quality: 1,
+        });
+        console.log(result)
+        if (!result.canceled) {
+
+            setImage(result.assets[0].uri);
+            setImageResult(result)
+
+        }
+    };
     if (userData === null) {
         return (
             <View>
@@ -62,7 +104,22 @@ const ProviderProfileScreen = (props) => {
                         <Text style={{ color: 'white', fontSize: 15 }}>Logout</Text>
                         <Ionicons name='log-out' size={30} color={'white'} />
                     </Pressable>
-                    <Image source={{ uri: userData.ServiceProviderImage || defaultAvatarImage }} style={{ height: 200, width: 200 }} resizeMode={'center'} />
+                    <View style={{ justifyContent: 'center', alignItems: 'center', width: '100%' }}>
+                        <Ionicons name='add-circle-outline' size={25} color='blue' onPress={pickImage} style={{ position: 'relative', left: 50, top: 30, zIndex: 10 }} />
+                        <Image
+                        
+                            PlaceholderContent={<Skeleton animation='wave' rounded size={23} />}
+                            source={{ uri: image ? image : '' || userData.ServiceProviderImage ? serverIP + userData.ServiceProviderImage : defaultAvatarImage }}
+                            style={[{ borderWidth: 1, borderColor: 'blue' }, image ? { width: 200, height: 200, borderRadius: 100, } : { width: 100, height: 100, borderRadius: 50, }]}
+                        />
+                        {
+                            image &&
+                            <View style={{ flexDirection: 'row', width: '100%', justifyContent: 'space-evenly', marginBottom: 20 }}>
+                                <Button title='cancel' onPress={() => setImage(null)} />
+                                <Button title='Save' onPress={handleImageUpload} />
+                            </View>
+                        }
+                    </View>                  
                     <Text>{userData.ServiceProvideName}</Text>
                     <Text>{userData.ServiceProviderPhone}</Text>
 
@@ -72,7 +129,7 @@ const ProviderProfileScreen = (props) => {
                         <Pressable onPress={() => {
                             navigation.navigate('ServiceofProviderScreen', { serviceData: item })
                         }}>
-                            <Image source={{ uri: item.service_img, height: 50, width: 50 }} resizeMode={'cover'} style={{ borderRadius: 25, margin: 2, borderWidth: 1, borderColor: 'red' }} />
+                            <Image source={{ uri: item.service_img}} PlaceholderContent={<ActivityIndicator/>}  resizeMode={'cover'} style={{ borderRadius: 25, margin: 2, height: 50, width: 50 , borderWidth: 1, borderColor: 'red' }} />
 
                         </Pressable>
                     )}

@@ -25,6 +25,8 @@ import ServiceofProviderScreen from './Screens/ServiceofProviderScreen';
 import UserChatScreen from './Screens/UserChatScreen';
 import { io } from 'socket.io-client';
 import PersonalChatScreen from './Screens/PersonalChatScreen';
+import MyBookings from './TabServiceProvider/MyBookings';
+
 const Stack = createNativeStackNavigator();
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
@@ -48,7 +50,6 @@ async function registerForPushNotificationsAsync() {
   }
 
   if (Device.isDevice) {
-    console.log(Device.brand,Device.designName,Device.designName,Device.deviceYearClass,"Version",Device.osVersion,Device.osName)
     const { status: existingStatus } = await Notifications.getPermissionsAsync();
     let finalStatus = existingStatus;
     if (existingStatus !== 'granted') {
@@ -62,9 +63,7 @@ async function registerForPushNotificationsAsync() {
     }
     token = (await Notifications.getExpoPushTokenAsync()).data;
     console.log(token);
-  } else {
-    alert('Must use physical device for Push Notifications');
-  }
+  } 
 
   return token;
 }
@@ -202,13 +201,16 @@ function App() {
           <Stack.Screen options={{ title: 'Reset Password'}} name="ForgotPass" component={ForgotPassScreen} />
           <Stack.Screen name='Register' options={{ headerShown: false, title: 'Regiter ',animation:'slide_from_right' }} component={RegisterScreen} />
           <Stack.Screen name="Home" options={{ headerShown: false,animation:'default' }} component={HomeScreen} />
-          <Stack.Screen name='Service' component={ServiceScreen} />
-          <Stack.Screen name='ProviderShowCase' component={ServiceProviderShowcase}/>
+          <Stack.Screen name='Service' options={{ headerTintColor:'white' ,headerStyle:{backgroundColor:'rgba(200,0,100,1)'}}} component={ServiceScreen} />
+          <Stack.Screen name='ProviderShowCase' options={{headerTintColor:'white' ,headerStyle:{backgroundColor:'rgba(200,0,100,1)'}}} component={ServiceProviderShowcase}/>
           <Stack.Screen name='AddServiceFromScreen' options={{animation:'slide_from_right',title:'Add Services'}} component={AddServiceFormScreen} />
           <Stack.Screen name='ProviderProfileScreen' options={{animation:'slide_from_right',title:'Profile'}} component ={ProviderProfileScreen}/>
           <Stack.Screen name='ServiceofProviderScreen' options={{animation:'slide_from_right',title:'Service'}} component={ServiceofProviderScreen}/>
-          <Stack.Screen name='UserChatScreen' options={{animation:'slide_from_right',title:'Chats'}} component={UserChatScreen}/>
-          <Stack.Screen name='PersonalChatScreen' options={{animation:'slide_from_right'}} component={PersonalChatScreen}/>
+          <Stack.Screen name='UserChatScreen' options={{animation:'slide_from_right',title:'Chats',headerShown:false,headerStyle:{backgroundColor:'rgba(200,0,100,1)'}}} component={UserChatScreen}/>
+          <Stack.Screen name='PersonalChatScreen'  options={{animation:'slide_from_right',headerShadowVisible:false
+        
+          }} component={PersonalChatScreen}/>
+          <Stack.Screen name='MyBookings' options={{animation:'slide_from_right',title:'My Bookings'}} component={MyBookings}/>
         </Stack.Navigator>
       </NavigationContainer>
     )

@@ -6,6 +6,7 @@ import { serverIP } from '../Constants/IPofBackned'
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useDispatch, useSelector } from 'react-redux'
 import { updateInfo, userLogin } from '../Redux/actions'
+import SplashScreen from './SplashScreen'
 
 const styles = StyleSheet.create({
     main: {
@@ -97,7 +98,7 @@ const styles = StyleSheet.create({
 })
 const LoginScreen = ({ navigation, route }) => {
     const [clickLogin,setclickLogin] = useState(false)
-    const [showSplash,setshowSplash] = useState(false)
+    const [showSplash,setshowSplash] = useState(true)
     const dispatch = useDispatch();
     const userData = useSelector(s => s.userData)
     const [userPhone, setUserPhone] = useState('');
@@ -140,11 +141,14 @@ const LoginScreen = ({ navigation, route }) => {
 
 
         }
+        else 
+        setshowSplash(false)
 
 
     }
     
     useEffect(() => {
+        
         if(!clickLogin)
             LoginFromStorageData().finally(d=>console.log(d))
         if(clickLogin){
@@ -179,7 +183,6 @@ const LoginScreen = ({ navigation, route }) => {
                     
                     dispatch(userLogin(res.data))
                     setLoaded(true)
-                    dispatch(updateInfo({ msg: "Login Success", show: true, infoType: "Success" }));
                     setshowSplash(false)
                     navigation.replace('Home')
                 }
@@ -201,13 +204,7 @@ const LoginScreen = ({ navigation, route }) => {
     }
 
     if(showSplash){
-        return(
-            <View style={{backgroundColor:'rgb(100,0,200)',flex:1,justifyContent:'center',alignItems:'center'}}>
-                <StatusBar hidden backgroundColor={'rgb(100,0,200)'}/>
-                <ActivityIndicator size={50} color={'white'} />
-                <Text style={{color:'white'}} >Please wait...</Text>
-            </View>
-        )
+        return <SplashScreen/>
     }
     return (
         <View style={styles.main}>
