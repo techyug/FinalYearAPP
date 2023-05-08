@@ -7,6 +7,8 @@ import { defaultAvatarImage } from '../Constants/Gconstants';
 import { useDispatch } from 'react-redux';
 import { updateInfo } from '../Redux/actions';
 import * as Notifications from 'expo-notifications';
+import { Ionicons } from '@expo/vector-icons';
+import Icon from 'react-native-ionicons';
 
 const ServiceScreen = (props) => {
     const navigation = useNavigation();
@@ -25,11 +27,10 @@ const ServiceScreen = (props) => {
                 .then(res => {
                     let arr = res.data;
                     setServiceProviders(arr)
+                    console.log(arr)
                     setloaded(true)
 
                 }).catch(err => {
-                    console.log(serverIP + '/service-providers/3');
-                    console.log(err);
                     dispatch(updateInfo({msg:err.toString(),show:true,infoType:"Error"}));
                     setloaded(true)
                 })
@@ -42,7 +43,14 @@ const ServiceScreen = (props) => {
     return (
         <View style={{ flex: 1, paddingHorizontal: 15, backgroundColor: 'white', paddingVertical: 5 }}>
             
-            <FlatList
+            {
+                serviceProviders.length==0?
+                <View style={{flex:1,justifyContent:'center',alignItems:'center'}}>
+                    <Ionicons name='close-circle' size={29} color='red'/>
+                    <Text style={{fontSize:20}}>No Service providers found</Text>
+                </View>
+                :
+                <FlatList
                 data={serviceProviders}
                 refreshControl = {
                     <RefreshControl refreshing={!loaded} onRefresh={onRefresh} />
@@ -54,19 +62,21 @@ const ServiceScreen = (props) => {
                         <View style={{ flexDirection: 'row', justifyContent: 'space-between', padding: 10, borderWidth: 0, margin: 2, backgroundColor: 'rgba(0,0,0,0.1)', borderRadius: 10 ,height:80,alignItems:'center'}}>
                             
                             <Image
-                                source={{ uri: item.ServiceProviderImage || defaultAvatarImage }}
+                                source={{ uri: item.ServiceProviderImage?serverIP+ item.ServiceProviderImage : defaultAvatarImage }}
                                 style={{ width: 60, height: '100%', borderRadius: 10 }}
                             />
                             <Text style={{fontSize:18}}>
                                 {item.ServiceProvideName}
                             </Text>
-                            <Button title='Chat' onPress={ ()=>navigation.navigate('PersonalChatScreen',{ChatTo:item.ServiceProviderPhone})} />
+                            <Ionicons name='chatbox-ellipses-outline' color={"blue"} onPress={ ()=>navigation.navigate('PersonalChatScreen',{ChatTo:item.ServiceProviderPhone})} size={30}/>
+                            
 
                         </View>
 
                     </TouchableOpacity>
                 )}
             />
+            }
         </View>
     )
 }

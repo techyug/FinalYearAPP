@@ -1,4 +1,3 @@
-import axios from "axios";
 import { ALL_MESSAGES_FROM_SQLITE_TO_REDUX, INSERT_NEW_MESSAGE, MESSAGE_UPDATE, UPDATE_INFO, USER_LOGIN, USER_LOGOUT } from "./actionType";
 const initialState = {
     isLoggedIn: false,
@@ -11,7 +10,7 @@ const initialState = {
     messages: [],
     info: {
         msg: "Welcome",
-        show: true,
+        show: false,
         infoType: 'Success'
     },
     messages1: new Map()
@@ -52,15 +51,16 @@ export const mainReducer = (state = initialState, action) => {
             return { ...state, info: action.newinfoData }
         case INSERT_NEW_MESSAGE:
             const { newMessage } = action;
-            const messages = new Map(state.messages1); // create a new Map with the existing messages
+           
+            const messages = new Map(state.messages1);
             const phoneKey = newMessage.toPhone === state.commonUserData.userPhone
                 ? newMessage.fromPhone
                 : newMessage.toPhone;
 
             if (messages.has(phoneKey)) {
-                messages.get(phoneKey).push(newMessage); // modify the new Map object
+                messages.get(phoneKey).push(newMessage); 
             } else {
-                messages.set(phoneKey, [newMessage]); // modify the new Map object
+                messages.set(phoneKey, [newMessage]); 
             }
             
             return {

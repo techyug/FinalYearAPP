@@ -25,6 +25,7 @@ const AddServiceFormScreen = () => {
     const [ProviderLocation, setProviderLocation] = useState({ "coords": { "accuracy": 0, "altitude": 0, "altitudeAccuracy": 0, "heading": 0, "latitude": 0.0000000, "longitude": 0.000000, "speed": 0 }, "mocked": false, "timestamp": 0 })
     const [readableLocation, setreadableLocation] = useState(null)
     const [IsSerivceRequestSucces, setIsSerivceRequestSucces] = useState(false)
+    const [fee,setFee] = useState("");
     
 
     const [loaded, setloaded] = useState(false)
@@ -61,7 +62,7 @@ const AddServiceFormScreen = () => {
     const AddServicewithProvider = () => {
         setloaded(false)
         if(selectedService!=null)
-        callApi(serverIP + '/add-service-to-provider','POST', { selectedService: selectedService, userData: userData, ServiceLocation: ProviderLocation, ReadableServiceLocation: readableLocation }).
+        callApi(serverIP + '/add-service-to-provider','POST', { selectedService: selectedService, userData: userData, ServiceLocation: ProviderLocation, ReadableServiceLocation: readableLocation,serviceProviderFee:fee }).
             then((res) => {
                 let resp = res.data.toString();
                 if (resp.includes('Duplicate')) {
@@ -98,10 +99,10 @@ const AddServiceFormScreen = () => {
                         </Pressable>
                     ))
                 }
-                <Pressable style={{ flexDirection: 'row', padding: 10, alignItems: 'center', justifyContent: 'center', backgroundColor: 'rgba(0,50,255,1)', elevation: 7, margin: 3, borderRadius: 10 }}  >
+                {/* <Pressable style={{ flexDirection: 'row', padding: 10, alignItems: 'center', justifyContent: 'center', backgroundColor: 'rgba(0,50,255,1)', elevation: 7, margin: 3, borderRadius: 10 }}  >
                     <Ionicons name='add-circle-outline' size={20} color='white' />
                     <Text style={{ color: 'white' }}>Request to Add more Services</Text>
-                </Pressable>
+                </Pressable> */}
 
             </ScrollView>
             <ServicesList/>
@@ -137,9 +138,9 @@ const AddServiceFormScreen = () => {
             <View style={{ width:'100%',borderTopWidth: 1, borderColor: 'lightgray' }}>
                 {
                     selectedService === null ?
-                        (<Pressable style={{ flexDirection: 'row', width: 200, alignSelf: 'center', padding: 10, alignItems: 'center', justifyContent: 'center', backgroundColor: 'red', elevation: 7, margin: 3, borderRadius: 10 }}  >
-                            <Ionicons name='add-circle-outline' size={20} color='white' />
-                            <Text style={{ color: 'white' }}>Add more Services</Text>
+                        (<Pressable style={{ flexDirection: 'row', width: 200, alignSelf: 'center', padding: 10, alignItems: 'center', justifyContent: 'center', backgroundColor: 'blue', elevation: 7, margin: 3, borderRadius: 10 }}  >
+                            <Ionicons name='checkbox-outline' size={20} color='white' />
+                            <Text style={{ color: 'white' }}>Choose a Service</Text>
                         </Pressable>
                         ) : (
                             <Pressable onPress={moveNext} style={{ flexDirection: 'row', width: 200, alignSelf: 'center', padding: 10, alignItems: 'center', justifyContent: 'center', backgroundColor: 'rgba(0,50,255,1)', elevation: 7, margin: 3, borderRadius: 10 }} >
@@ -181,7 +182,9 @@ const AddServiceFormScreen = () => {
                                 readableLocation!=undefined &&
                                  <Text>Pincode : { readableLocation.region +" "+readableLocation.postalCode} </Text>
                             }
-                            <Button title='Fetch my Location' onPress={GetLocation} />
+                            <Button  title='Fetch my Location'  onPress={GetLocation} />
+
+                            <TextInput placeholder='Fee/Charges eg. 250Rs/hr' value={fee} onChangeText={(text)=>setFee(text)} style={{padding:10,borderWidth:1,borderRadius:10,margin:3}}/>
                             <View style={{ flexDirection: 'row',justifyContent:'space-around',marginTop:20  }}>
                                 <Pressable onPress={() => setMove(false)} style={{ flexDirection: 'row', backgroundColor: 'white', padding: 5, elevation: 5 ,borderRadius:10}}>
                                     <Ionicons name='arrow-back' size={20} />

@@ -14,3 +14,10 @@ export const MessageStatus={
     messageReceived:9,
     messageReceivedandSeen:8,
 }
+export const BookingStatus = {
+    bookingDeleted:0,
+    newBookingRequest :1,
+    acceptedByServiceProvider:2,
+    cancelledByServiceProvider:3,
+    cancelledByUser:4
+}

@@ -189,7 +189,7 @@ const ServiceProviderDashBord = () => {
               navigation.navigate('ProviderProfileScreen')
             }}>
               <View>
-                <Image source={{ uri: userData?.ServiceProviderImage || defaultAvatarImage, width: 50, height: 50, }} style={{ borderRadius: 25,borderWidth:2,borderColor:'red',padding:4 }} />
+                <Image source={{ uri: userData?.ServiceProviderImage?serverIP+userData?.ServiceProviderImage: defaultAvatarImage, width: 50, height: 50, }} style={{ borderRadius: 25,borderWidth:2,borderColor:'red',padding:4 }} />
               </View>
             </Pressable>
         

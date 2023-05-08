@@ -1,7 +1,13 @@
 import * as SQLite from 'expo-sqlite';
 
-
-const db = SQLite.openDatabase("myTestDatabase.db")
+// myTestDatabase.db
+var db= null
+const makeLocalDbReady = (userPhone) =>{
+  if(db==null){
+   db = SQLite.openDatabase(userPhone+'.db')
+   console.log('We are using ',userPhone+'.db')
+  }
+}
 
 const createTable = () => {
   console.log("sjdbhbcaj")
@@ -91,14 +97,14 @@ const createMessagesTable = () => {
     })
   })
 }
-const insertMessageToTable = (myRole='',messageId='',senderName = "", senderPhone = "", receiverPhone = "", receiverName = "", message = "",amISender=true,status=0,otherData=null) => {
+const insertMessageToTable = (myRole='',messageId='',senderName = "", senderPhone = "", receiverPhone = "", receiverName = "", message = "",amISender=true,timestamp="",status=0,otherData=null) => {
  let otherDataString = JSON.stringify(otherData)
 db.transaction(tx=>{
-  let query = `INSERT INTO messages (myRole, messageId, senderName, senderPhone, receiverPhone, receiverName, message, amIsender, status, otherData) 
-  VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
-  
-  tx.executeSql(query,[myRole,messageId,senderName,senderPhone,receiverPhone,receiverName,message,amISender,status,otherDataString],(tt,rs)=>{
-    console.log("insert message ",rs);
+  let query = `INSERT INTO messages (myRole, messageId, senderName, senderPhone, receiverPhone, receiverName, message, amIsender,timestamp, status, otherData) 
+  VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?)`
+  console.log("----------------------------------------------------------")
+  tx.executeSql(query,[myRole,messageId,senderName,senderPhone,receiverPhone,receiverName,message,amISender,timestamp,status,otherDataString],(tt,rs)=>{
+    console.log("insert message ");
   },(tt,err)=>{
     console.log("error in insert",err.message)
   });
@@ -153,6 +159,7 @@ const dropTable=()=>{
   });
 }
 export default {
+  makeLocalDbReady,
   createMessagesTable,
   insertMessageToTable,
   createTable,
@@ -160,5 +167,5 @@ export default {
   fetchData,
   fetchAllMessagesFromTable,
   dropTable
-
+  
 };
