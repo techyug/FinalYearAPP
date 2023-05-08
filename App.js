@@ -158,7 +158,7 @@ function App() {
       // Will change fadeAnim value to 1 in 5 seconds
       Animated.timing(fadeAnim, {
         toValue: 1,
-        duration: 1000,
+        duration: 300,
         
         useNativeDriver: true,
       }).start();
@@ -168,7 +168,7 @@ function App() {
       // Will change fadeAnim value to 0 in 3 seconds
       Animated.timing(fadeAnim, {
         toValue: 0,
-        duration: 1000,
+        duration: 300,
         useNativeDriver: true,
       }).start();
     };
@@ -182,7 +182,7 @@ function App() {
           show: false,
         }
         dispatch(updateInfo(data))
-      }, 5000);
+      }, 3000);
     }
    
     return (

@@ -31,7 +31,6 @@ const ServiceProviderShowcase = (props) => {
     var socket = connectToSocket();
     const messages1 = useSelector(s => s.messages1);
     const messages = messages1.get(ProviderData.ServiceProviderPhone) || [];
-    //console.log("message 1",messages1.get(ProviderData.ServiceProviderPhone))
     const flatListRef = useRef(null);
     const commonUserData = useSelector(state => state.commonUserData)
     const [userLocation, setUserLocation] = useState({ "coords": { "accuracy": 0, "altitude": 0, "altitudeAccuracy": 0, "heading": 0, "latitude": 0.0000000, "longitude": 0.000000, "speed": 0 }, "mocked": false, "timestamp": 0 })
@@ -162,12 +161,13 @@ const ServiceProviderShowcase = (props) => {
                 </View>
             </View>
             <View>
-                <Text>{ProviderData.ProviderStatus}</Text>
+                <Text style={{backgroundColor:'lightgray',paddingHorizontal:5,borderRadius:10}}>Fee/Charges</Text>
+                <Text style={{color:'blue'}}>{ProviderData.serviceProviderFee}</Text>
             </View>
         </View>
 
     return (
-        <View style={{ flex: 1, paddingHorizontal: 0, backgroundColor: 'rgb(230,230,230)' }}>
+        <View style={{ flex: 1, paddingHorizontal: 0, backgroundColor: 'white' }}>
             <ScrollView contentContainerStyle={{ padding: 15, paddingTop: 0 }} >
 
                 <Image source={{ uri: ProviderData.service_img, height: 200 }} />
@@ -185,7 +185,7 @@ const ServiceProviderShowcase = (props) => {
 
                     </View>
                     <View style={{ elevation: 5, backgroundColor: 'white', padding: 10, borderBottomLeftRadius: 20, borderBottomRightRadius: 20, borderTopRightRadius: 20 }}>
-                        <Text>this is  a big review to this provide i am ipressd this is  a big review to this provide i am ipressd </Text>
+                        <Text>Lorem ipsum dolor sit amet. Qui consequatur laudantium et laudantium accusantium est animi doloremque est quod eius aut fugit autem. </Text>
                         <ScrollView horizontal scrollEnabled={true} contentContainerStyle={{ padding: 10 }}>
                         </ScrollView>
                     </View>
@@ -201,7 +201,7 @@ const ServiceProviderShowcase = (props) => {
 
                     </View>
                     <View style={{ elevation: 5, backgroundColor: 'white', padding: 10, borderBottomLeftRadius: 20, borderBottomRightRadius: 20, borderTopRightRadius: 20 }}>
-                        <Text>this is  a big review to this provide i am ipressd this is  a big review to this provide i am ipressd </Text>
+                        <Text>Lorem ipsum dolor sit amet. Qui consequatur laudantium et laudantium accusantium est animi doloremque est quod eius aut fugit autem. </Text>
                         <ScrollView horizontal scrollEnabled={true} contentContainerStyle={{ paddingLeft: 10 }}>
                         </ScrollView>
                     </View>
@@ -219,7 +219,7 @@ const ServiceProviderShowcase = (props) => {
                                 For : {ProviderData.service_title}
                             </Text>
                             <Text>
-                                Booking Date : {bookDate.toLocaleDateString()}
+                                Choose Booking Date : {bookDate.toLocaleDateString()}
                             </Text>
                             {datePicker && bookingModel && (
                                 <DateTimePicker
@@ -233,12 +233,12 @@ const ServiceProviderShowcase = (props) => {
                         </Pressable>
                         <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                             <Text>
-                                discription :
+                                Write Discription :
                             </Text>
                             <TextInput multiline numberOfLines={4}  style={{ padding: 5, textAlign: 'left', maxWidth: '80%' }} onFocus={() => setchatboxHeight(60)} placeholder='Your booking description' value={bookingDescription} onChangeText={(text) => SetBookingDescription(text)} />
                         </View>
                         <View style={{flexDirection:'row',justifyContent:'space-between',alignItems:'center',marginBottom:10}}>
-                            <Text>Location :{readableLocation?.city+', '+readableLocation?.region}  </Text>
+                            <Text>Choose Location :{readableLocation?.city+', '+readableLocation?.region}  </Text>
                             {loading &&  <ActivityIndicator/> }
                             <Ionicons name={'location-outline'} size={30} style={{borderRadius:10,backgroundColor:'lightgray'}}  color={readableLocation?'black':'blue'} onPress={GetLocation}/>
                         </View>

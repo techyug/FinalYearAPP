@@ -54,8 +54,8 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         backgroundColor: 'rgba(255,255,255,1)',
-        borderWidth: 1,
-        borderColor: 'rgba(200,0,100,1)',
+        
+        
         elevation: 4,
         
     },

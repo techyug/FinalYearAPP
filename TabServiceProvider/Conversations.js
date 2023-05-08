@@ -74,7 +74,7 @@ const Conversations = () => {
                     }}>
                     <Image source={{ uri: profileImagesWithPhoneAsKey[item[0]]?.user_image ? serverIP + profileImagesWithPhoneAsKey[item[0]].user_image : defaultAvatarImage, width: 50, height: 50, }} style={{ borderRadius: 25, alignSelf: 'center' }} />
                     <View style={{ flex: 1, paddingHorizontal: 10, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
-                      <View style={{}}>
+                      <View style={{maxWidth:'80%'}}>
                         <Text style={{ fontWeight: '700' }}>{profileImagesWithPhoneAsKey[item[0]]?.user_name}</Text>
                         <Text style={{ color: 'gray' }} numberOfLines={1} >Message : {item[1][item[1].length - 1].msg}</Text>
                       </View>
